@@ -1,14 +1,12 @@
 github_users:
-  - torvalds
-  - alshedivat
+  - devichand
 
 repo_description_lines_max: 2
 
 github_repos:
-  - alshedivat/al-folio
-  - jekyll/jekyll
-  - twbs/bootstrap
-  - jquery/jquery
-  - FortAwesome/Font-Awesome
-  - mathjax/MathJax
-  - jpswalsh/academicons
+  - devichand579/HPT
+  - devichand579/Instance_seg_teeth
+  - devichand579/ROLEBENCH
+  - devichand579/Underwater_acoustic_target_classification
+  - devichand579/Image_captioning_architectures
+  - devichand579/LLM_SQL
