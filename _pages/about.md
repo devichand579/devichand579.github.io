@@ -2,7 +2,7 @@
 layout: about
 title: about
 permalink: /
-subtitle: <a href='#'>Affiliations</a>. Address. Contacts. Motto. Etc.
+subtitle: <a href='https://cse.iitkgp.ac.in/'>Indian Institute of Technology Kharagpur</a>
 
 profile:
   align: right
