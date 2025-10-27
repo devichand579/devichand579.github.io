@@ -56,7 +56,7 @@ pagination:
   </div>
   {% endif %}
 
-{% assign featured_posts = site.posts | where: "featured", "true" %}
+<!-- {% assign featured_posts = site.posts | where: "featured", "true" %}
 {% if featured_posts.size > 0 %}
 <br>
 
@@ -99,15 +99,16 @@ pagination:
     </div>
     <hr>
 
-{% endif %}
-
-  <ul class="post-list">
+{% endif %} -->
 
     {% if page.pagination.enabled %}
       {% assign postlist = paginator.posts %}
     {% else %}
       {% assign postlist = site.posts %}
     {% endif %}
+
+  {% if postlist.size > 0 %}
+  <ul class="post-list">
 
     {% for post in postlist %}
 
@@ -188,6 +189,12 @@ pagination:
     {% endfor %}
 
   </ul>
+  {% else %}
+  <div class="text-center" style="padding: 80px 20px;">
+    <h2>No posts yet!</h2>
+    <p style="color: #666; margin-top: 10px;">Stay tuned for upcoming blog posts.</p>
+  </div>
+  {% endif %}
 
 {% if page.pagination.enabled %}
 {% include pagination.liquid %}
