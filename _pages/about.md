@@ -31,4 +31,4 @@ I am currently primarily focused on fundamental research in self-supervised lear
 
 Beyond my research, I am also interested in physics, entrepreneurship, human cognition, and behavioral psychology. I enjoy exploring different technologies and sciences (e.g., astrophysics, authentication, code deployment, etc.) and investigating how we can improve them in the age of advancing machine intelligence. I am particularly fascinated by understanding the practical limitations of current technologies and scientific methods and thinking ways to improve them if possible.
 
-Feel free to reach out to me at <a href="mailto:devichand579@gmail.com">devichand579@gmail.com</a> if you have questions or discuss anything related to my research or blogs, or are interested in collaborating.
+Feel free to reach out to me at devichand579[at]gmail[dot]com if you have questions or discuss anything related to my research or blogs, or are interested in collaborating.
