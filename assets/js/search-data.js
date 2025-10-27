@@ -23,6 +23,13 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/publications/";
           },
+        },{id: "nav-repositories",
+          title: "Repositories",
+          description: "A fourth year undergraduate student of Department of Computer Science and Engineering, IIT Kharagpur. I focus on fundamental research in Cognitive Science and NLP, particularly in Psycholinguistics, LLM Reasoning, Neurosymbolic AI, and World Models, inspired by Cognitive Science and Computational Learning to create interpretable, efficient, human-aligned AI systems.",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/repositories/";
+          },
         },{id: "nav-cv",
           title: "cv",
           description: "",
