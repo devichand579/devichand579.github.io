@@ -6,4 +6,4 @@ related_posts: false
 published: true
 ---
 
-Started my research internship at Saint Petersburg Electro-technical University, Russia under the supervision of Dr.Dimitrii kaplun.
+Started my research internship at Saint Petersburg Electro-technical University, Russia under the supervision of Dr.Dimitrii Kaplun.

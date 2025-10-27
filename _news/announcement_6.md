@@ -6,4 +6,4 @@ related_posts: false
 published: true
 ---
 
-Started my research internship at IIT palakkad under the supervision of Dr.Sabarimalai manikandan.
+Started my research internship at IIT palakkad under the supervision of Dr.Sabarimalai Manikandan.

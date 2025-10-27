@@ -6,4 +6,4 @@ related_posts: false
 published: true
 ---
 
-Started my undergraduate journey at IIT Kharagpur at Computer Science and Engineering department in 2021.
+Started my undergraduate journey at IIT Kharagpur at Computer Science and Engineering Department in 2021.
