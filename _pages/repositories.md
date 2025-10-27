@@ -4,7 +4,7 @@ permalink: /repositories/
 description: A final year student of Department of Computer Science and Engineering, IIT Kharagpur. I focus on fundamental research in self-supervised learning, reasoning, world models, interpretability, and evaluation science inspired by cognitive science and computational learning to develop
 intelligent, interpretable, and human-aligned AI models.
 nav: true
-nav_order: 4
+nav_order: 3
 ---
 
 ## Some Stats
