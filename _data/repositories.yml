@@ -6,7 +6,5 @@ repo_description_lines_max: 2
 github_repos:
   - devichand579/HPT
   - devichand579/Instance_seg_teeth
-  - devichand579/ROLEBENCH
-  - devichand579/Underwater_acoustic_target_classification
-  - devichand579/Image_captioning_architectures
-  - devichand579/LLM_SQL
+  - devichand579/awesome_Cog_NeurSymAI_papers
+  - devichand579/Safety_Alignment_resources
