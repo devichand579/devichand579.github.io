@@ -5,11 +5,18 @@ title: cv
 nav: true
 nav_order: 5
 ---
-<script>
-// Immediate redirect - no delay
-window.location.replace("https://drive.google.com/file/d/16QMoy_wZWyZ5Ly2Ov5C4fSu1abjrS-Wp/view?usp=sharing");
-</script>
 
-<meta http-equiv="refresh" content="0; URL=https://drive.google.com/file/d/16QMoy_wZWyZ5Ly2Ov5C4fSu1abjrS-Wp/view?usp=sharing">
+## Curriculum Vitae
 
-Redirecting to CV... <a href="https://drive.google.com/file/d/16QMoy_wZWyZ5Ly2Ov5C4fSu1abjrS-Wp/view?usp=sharing">Click here if you are not redirected.</a>
+<div style="position: relative; width: 100%; height: 800px; max-width: 100%; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+  <iframe 
+    src="https://drive.google.com/file/d/16QMoy_wZWyZ5Ly2Ov5C4fSu1abjrS-Wp/preview" 
+    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;">
+  </iframe>
+</div>
+
+<p style="text-align: center; margin-top: 10px;">
+  <a href="https://drive.google.com/file/d/16QMoy_wZWyZ5Ly2Ov5C4fSu1abjrS-Wp/view?usp=sharing" target="_blank" rel="noopener noreferrer">
+    Open CV in new tab
+  </a>
+</p>
