@@ -1,11 +1,13 @@
 ---
-layout: cv
+layout: none
 permalink: /cv/
 title: cv
 nav: true
 nav_order: 5
-cv_pdf: "https://drive.google.com/file/d/1HZzOhJWENgTjL1QmamOTXHSZ9UHFF0qn/view?usp=sharing"
-description: This is a description of the page. You can modify it in '_pages/cv.md'. You can also change or remove the top pdf download button.
-toc:
-  sidebar: left
+description: Redirecting to CV...
 ---
+<meta http-equiv="refresh" content="0; url=https://drive.google.com/file/d/16QMoy_wZWyZ5Ly2Ov5C4fSu1abjrS-Wp/view?usp=sharing">
+<script>
+window.location.href = "https://drive.google.com/file/d/16QMoy_wZWyZ5Ly2Ov5C4fSu1abjrS-Wp/view?usp=sharing";
+</script>
+<p>Redirecting to CV... <a href="https://drive.google.com/file/d/16QMoy_wZWyZ5Ly2Ov5C4fSu1abjrS-Wp/view?usp=sharing">Click here if you are not redirected.</a></p>
