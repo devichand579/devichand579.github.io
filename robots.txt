@@ -1,1 +1,1 @@
-User-agent: * Disallow: Sitemap: https://devichand579.github.io/sitemap.xml
+User-agent: * Disallow: Sitemap: https://devichand.com/sitemap.xml
