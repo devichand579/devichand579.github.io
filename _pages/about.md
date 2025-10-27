@@ -27,7 +27,7 @@ latest_posts:
 
 My name is Devichand. I am a final year student of <a href="https://cse.iitkgp.ac.in/">Department of Computer Science and Engineering</a>, <a href="https://www.iitkgp.ac.in/">IIT Kharagpur</a>. I am passionate about developing self-supervised world models and learning objectives inspired from human cognitive intelligence and functional capabilities.
 
-I am currently primarily focused on fundamental research in self-supervised learning, reasoning, world models, interpretability, and evaluation science inspired by cognitive science and computational learning. Under the supervision of <a href="https://cse.iitkgp.ac.in/~pawang/">Dr. Pawan Goyal</a>, I am currently working on adaptive diffusion language models.
+I am currently focused on fundamental research in self-supervised learning, reasoning, world models, interpretability, and evaluation science inspired by cognitive science and computational learning. Under the supervision of <a href="https://cse.iitkgp.ac.in/~pawang/">Dr. Pawan Goyal</a>, I am currently working on adaptive diffusion language models.
 
 Beyond my research, I am also interested in physics, entrepreneurship, human cognition, and behavioral psychology. I enjoy exploring different technologies and sciences (e.g., astrophysics, authentication, code deployment, etc.) and investigating how we can improve them in the age of advancing machine intelligence. I am particularly fascinated by understanding the practical limitations of current technologies and scientific methods and thinking ways to improve them if possible.
 
