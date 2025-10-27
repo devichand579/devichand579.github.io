@@ -2,6 +2,8 @@
 layout: about
 title: about
 permalink: /
+nav: true
+nav_order: 0
 subtitle: <a href='https://cse.iitkgp.ac.in/'>Indian Institute of Technology Kharagpur</a>
 
 profile:
