@@ -1,18 +1,20 @@
 ---
-layout: page
+layout: none
 permalink: /cv/
-title: cv
-nav: true
-nav_order: 5
+redirect_to: https://drive.google.com/file/d/16QMoy_wZWyZ5Ly2Ov5C4fSu1abjrS-Wp/view?usp=sharing
 ---
-
-<script type="text/javascript">
-  window.location.href = "https://drive.google.com/file/d/16QMoy_wZWyZ5Ly2Ov5C4fSu1abjrS-Wp/view?usp=sharing";
-</script>
-
-<meta http-equiv="refresh" content="0; url=https://drive.google.com/file/d/16QMoy_wZWyZ5Ly2Ov5C4fSu1abjrS-Wp/view?usp=sharing">
-<noscript>
-  <meta http-equiv="refresh" content="0; url=https://drive.google.com/file/d/16QMoy_wZWyZ5Ly2Ov5C4fSu1abjrS-Wp/view?usp=sharing">
-</noscript>
-
-Redirecting to CV... <a href="https://drive.google.com/file/d/16QMoy_wZWyZ5Ly2Ov5C4fSu1abjrS-Wp/view?usp=sharing">Click here if you are not redirected.</a>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Redirecting to CV...</title>
+    <script>
+        // Immediate redirect, no delay
+        window.location.replace("https://drive.google.com/file/d/16QMoy_wZWyZ5Ly2Ov5C4fSu1abjrS-Wp/view?usp=sharing");
+    </script>
+    <meta http-equiv="refresh" content="0; URL=https://drive.google.com/file/d/16QMoy_wZWyZ5Ly2Ov5C4fSu1abjrS-Wp/view?usp=sharing">
+</head>
+<body>
+    <p>Redirecting to CV... <a href="https://drive.google.com/file/d/16QMoy_wZWyZ5Ly2Ov5C4fSu1abjrS-Wp/view?usp=sharing">Click here if you are not redirected.</a></p>
+</body>
+</html>
