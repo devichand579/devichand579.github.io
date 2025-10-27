@@ -1,13 +1,13 @@
 ---
 layout: page
 permalink: /repositories/
-title: Repositories
-description: A fourth year undergraduate student of Department of Computer Science and Engineering, IIT Kharagpur. I focus on fundamental research in Cognitive Science and NLP, particularly in Psycholinguistics, LLM Reasoning, Neurosymbolic AI, and World Models, inspired by Cognitive Science and Computational Learning to create interpretable, efficient, human-aligned AI systems.
+description: A final year student of Department of Computer Science and Engineering, IIT Kharagpur. I focus on fundamental research in self-supervised learning, reasoning, world models, interpretability, and evaluation science inspired by cognitive science and computational learning to develop
+intelligent, interpretable, and human-aligned AI models.
 nav: true
 nav_order: 4
 ---
 
-## Devichand's Github
+## Some Stats
 
 {% if site.data.repositories.github_users %}
 
