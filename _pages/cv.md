@@ -3,7 +3,7 @@ layout: page
 permalink: /cv/
 title: cv
 nav: true
-nav_order: 5
+nav_order: 6
 ---
 
 <div style="position: relative; width: 100%; height: 800px; max-width: 100%; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
