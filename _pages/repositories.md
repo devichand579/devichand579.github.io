@@ -2,8 +2,7 @@
 layout: page
 permalink: /repositories/
 title: repositories
-description: A final year student of Department of Computer Science and Engineering, IIT Kharagpur. I focus on fundamental research in self-supervised learning, reasoning, world models, interpretability, and evaluation science inspired by cognitive science and computational learning to develop
-intelligent, interpretable, and human-aligned AI models.
+description: GitHub repositories and projects
 nav: true
 nav_order: 3
 ---
