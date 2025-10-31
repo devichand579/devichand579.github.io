@@ -29,6 +29,6 @@ My name is Devichand. I am a final year student of <a href="https://cse.iitkgp.a
 
 I am currently focused on fundamental research in self-supervised learning, reasoning, world models, interpretability, and evaluation science inspired by cognitive science and computational learning. Under the supervision of <a href="https://cse.iitkgp.ac.in/~pawang/">Dr. Pawan Goyal</a>, I am currently working on adaptive diffusion language models.
 
-Beyond my research, I am also interested in physics, entrepreneurship, human cognition, and behavioral psychology. I enjoy exploring different technologies and sciences (e.g., astrophysics, authentication, code deployment, etc.) and investigating how we can improve them in the age of advancing machine intelligence.
+Beyond my research, I am also interested in physics, human cognition, and behavioral psychology. I enjoy exploring different technologies and sciences and investigating how we can improve them in the age of advancing machine intelligence.
 
 Feel free to reach out to me at <a href="mailto:devichand579@gmail.com">devichand579[at]gmail[dot]com</a> if you have questions or discuss anything related to my research or blogs, or are interested in collaborating.
