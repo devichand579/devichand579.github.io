@@ -2,12 +2,9 @@
 layout: page
 permalink: /repositories/
 title: repositories
-description: GitHub repositories and projects
 nav: true
 nav_order: 3
 ---
-
-## Some Stats
 
 {% if site.data.repositories.github_users %}
 

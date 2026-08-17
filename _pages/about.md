@@ -4,14 +4,14 @@ title: about
 permalink: /
 nav: true
 nav_order: 0
-subtitle: <a href="https://www.iitkgp.ac.in/">Indian Institute of Technology Kharagpur</a>
+subtitle: 
 
 profile:
   align: right
-  image: prof_pic.png
+  image: profile_pic.jpg
   image_circular: true # crops the image to make it circular
   more_info: >
-selected_papers: false # includes a list of papers marked as "selected={true}"
+selected_papers: true # includes a list of papers marked as "selected={true}"
 social: true # includes social icons at the bottom of the page
 
 announcements:
@@ -25,10 +25,15 @@ latest_posts:
   limit: 3 # leave blank to include all the blog posts
 ---
 
-My name is Devichand. I am a final year student of <a href="https://cse.iitkgp.ac.in/">Department of Computer Science and Engineering</a>, <a href="https://www.iitkgp.ac.in/">IIT Kharagpur</a>. I am passionate about developing self-supervised world models and learning objectives inspired from human cognitive intelligence and functional capabilities.
+These days I’m more interested in understanding evolution and intelligence. I’m curious about how we can design representations, parameter collections, objectives and training/testing curricula to create models that are as sample efficient and adaptable as humans or better than us and evolve continuously to ever-changing data environments. 
 
-I am currently focused on fundamental research in self-supervised learning, reasoning, world models, interpretability, and evaluation science inspired by cognitive science and computational learning. Under the supervision of <a href="https://cse.iitkgp.ac.in/~pawang/">Dr. Pawan Goyal</a>, I am currently working on adaptive diffusion language models.
+My research boradly touches areas like evolutionary computation, sample efficiency, meta-learning, continual learning, information theory, and interpretability. I also draw on physics, cognitive science, and cellular biology. I see these fields as essential for understanding intelligence, and the world it inhabits. 
 
-Beyond my research, I am also interested in physics, human cognition, and behavioral psychology. I enjoy exploring different technologies and sciences and investigating how we can improve them in the age of advancing machine intelligence.
+If you want to evolve in a tiny new world, far simpler than human lives, you can go <a href="{{ '/world/' | relative_url }}">here</a>!!
 
-Feel free to reach out to me at <a href="mailto:devichand579@gmail.com">devichand579[at]gmail[dot]com</a> if you have questions or discuss anything related to my research or blogs, or are interested in collaborating.
+
+I had completed my Dual Degree (B.Tech + M.Tech) in Computer Science and Engineering at the <a href="https://cse.iitkgp.ac.in/">Department of Computer Science and Engineering</a>, <a href="https://www.iitkgp.ac.in/">IIT Kharagpur</a> Under the supervision of <a href="https://cse.iitkgp.ac.in/~pawang/">Dr. Pawan Goyal</a> and <a href="https://www.microsoft.com/en-us/research/people/gmanish/">Dr. Manish Gupta</a>.
+
+
+
+Feel free to reach out at <a href="mailto:devichand579@gmail.com">devichand579[at]gmail[dot]com</a> if you have questions, want to discuss research, or are interested in collaborating.

@@ -1,14 +1,16 @@
+{% assign stats_api = site.github_readme_stats_api | default: "https://github-readme-stats.shion.dev/api" %}
+
 <div class="repo p-2 text-center">
   <a href="https://github.com/{{ include.username }}">
     <img
       class="only-light w-100"
       alt="{{ include.username }}"
-      src="https://github-readme-stats.vercel.app/api/?username={{ include.username }}&theme={{ site.repo_theme_light }}&show_icons=true"
+      src="{{ stats_api }}/?username={{ include.username }}&theme={{ site.repo_theme_light }}&show_icons=true"
     >
     <img
       class="only-dark w-100"
       alt="{{ include.username }}"
-      src="https://github-readme-stats.vercel.app/api/?username={{ include.username }}&theme={{ site.repo_theme_dark }}&show_icons=true"
+      src="{{ stats_api }}/?username={{ include.username }}&theme={{ site.repo_theme_dark }}&show_icons=true"
     >
   </a>
 </div>

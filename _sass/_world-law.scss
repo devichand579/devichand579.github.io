@@ -1,0 +1,265 @@
+.world-law {
+  --wl-cell: 1.65rem;
+  --wl-air: #9ec5e859;
+  --wl-soil: #7a542e;
+  --wl-rock: #6f6a64;
+  --wl-water: #2c6ea5;
+  --wl-seed: #c48a22;
+  --wl-plant: #2f7d4a;
+  --wl-line: var(--global-divider-color);
+  margin-top: 0.4rem;
+}
+
+html[data-theme="dark"] .world-law {
+  --wl-air: #6f8eaa38;
+  --wl-soil: #5c4024;
+  --wl-rock: #8a8580;
+  --wl-water: #5aa0d6;
+  --wl-seed: #e0b04a;
+  --wl-plant: #4cae6d;
+}
+
+.world-law > p {
+  color: var(--global-text-color-light);
+  margin-bottom: 0.85rem;
+}
+
+.wl-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0 0 1.1rem;
+}
+
+.wl-section-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 1.4rem 0 0.6rem;
+}
+
+.wl-meta {
+  display: flex;
+  gap: 1rem;
+  align-items: baseline;
+  color: var(--global-text-color-light);
+  font-size: 0.9rem;
+  margin-bottom: 0.4rem;
+}
+
+.wl-observations {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem 1.2rem;
+  margin-bottom: 0.4rem;
+}
+
+.wl-pair {
+  margin: 0;
+}
+
+.wl-pair figcaption {
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: var(--global-text-color-light);
+  margin-bottom: 0.35rem;
+}
+
+.wl-pair-row,
+.wl-play {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem 1rem;
+  align-items: flex-start;
+}
+
+.wl-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.wl-pane > span {
+  font-size: 0.75rem;
+  color: var(--global-text-color-light);
+}
+
+.wl-grid {
+  display: grid;
+  gap: 2px;
+  padding: 4px;
+  background: var(--wl-line);
+  border: 1px solid var(--wl-line);
+}
+
+.wl-cell {
+  width: var(--wl-cell);
+  height: var(--wl-cell);
+  padding: 0;
+  border: 0;
+  position: relative;
+  background: var(--wl-air);
+}
+
+.wl-cell:disabled {
+  cursor: default;
+}
+
+.wl-cell:not(:disabled) {
+  cursor: pointer;
+}
+
+.wl-cell:not(:disabled):hover {
+  outline: 2px solid var(--global-theme-color);
+  outline-offset: -2px;
+  z-index: 1;
+}
+
+.wl-cell.is-soil {
+  background: var(--wl-soil);
+}
+
+.wl-cell.is-rock {
+  background: var(--wl-rock);
+}
+
+.wl-cell.is-water {
+  background: var(--wl-water);
+}
+
+.wl-cell.is-seed {
+  background: var(--wl-air);
+}
+
+.wl-cell.is-seed::after {
+  content: "";
+  position: absolute;
+  inset: 28%;
+  border-radius: 50%;
+  background: var(--wl-seed);
+}
+
+.wl-cell.is-plant {
+  background: var(--wl-air);
+}
+
+.wl-cell.is-plant::before {
+  content: "";
+  position: absolute;
+  left: 46%;
+  top: 28%;
+  width: 8%;
+  height: 52%;
+  background: var(--wl-plant);
+}
+
+.wl-cell.is-plant::after {
+  content: "";
+  position: absolute;
+  left: 28%;
+  top: 22%;
+  width: 44%;
+  height: 28%;
+  border-radius: 50% 50% 50% 0;
+  background: var(--wl-plant);
+  transform: rotate(-20deg);
+}
+
+.wl-palette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.8rem 0 0.7rem;
+}
+
+.wl-swatch {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid var(--wl-line);
+  background: var(--global-card-bg-color);
+  color: var(--global-text-color);
+  font-size: 0.78rem;
+  padding: 0.25rem 0.5rem 0.25rem 0.3rem;
+}
+
+.wl-swatch::before {
+  content: "";
+  width: 0.9rem;
+  height: 0.9rem;
+  background: var(--wl-air);
+  border: 1px solid var(--wl-line);
+}
+
+.wl-swatch.is-soil::before {
+  background: var(--wl-soil);
+}
+
+.wl-swatch.is-rock::before {
+  background: var(--wl-rock);
+}
+
+.wl-swatch.is-water::before {
+  background: var(--wl-water);
+}
+
+.wl-swatch.is-seed::before {
+  background: var(--wl-seed);
+  border-radius: 50%;
+}
+
+.wl-swatch.is-plant::before {
+  background: var(--wl-plant);
+}
+
+.wl-swatch.is-active {
+  border-color: var(--global-theme-color);
+  box-shadow: 0 0 0 1px var(--global-theme-color);
+}
+
+.wl-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 0.7rem;
+}
+
+.wl-actions button,
+.wl-swatch {
+  border-radius: 2px;
+}
+
+.wl-actions button {
+  border: 1px solid var(--wl-line);
+  background: var(--global-card-bg-color);
+  color: var(--global-text-color);
+  font-size: 0.85rem;
+  padding: 0.3rem 0.7rem;
+}
+
+.wl-actions button:hover,
+.wl-swatch:hover {
+  border-color: var(--global-theme-color);
+}
+
+.wl-status {
+  min-height: 1.4rem;
+  font-size: 0.95rem;
+}
+
+.wl-status[data-kind="ok"] {
+  color: var(--global-theme-color);
+}
+
+.wl-status[data-kind="bad"] {
+  color: var(--global-highlight-color);
+}
+
+@media (max-width: 576px) {
+  .world-law {
+    --wl-cell: 1.35rem;
+  }
+
+  .wl-observations {
+    grid-template-columns: 1fr;
+  }
+}

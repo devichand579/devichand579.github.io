@@ -1,9 +1,7 @@
-"AJP":
-  url: https://aapt.scitation.org/journal/ajp
+"EACL":
+  url: https://aclanthology.org/venues/eacl/
+  color: "#b31b1b"
+
+"KDD workshop":
+  url: https://www.kdd.org/
   color: "#00369f"
-
-"PhysRev":
-  url: https://journals.aps.org/
-
-"Vision":
-  color: "#009f36"

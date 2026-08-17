@@ -4,6 +4,7 @@ github_users:
 repo_description_lines_max: 2
 
 github_repos:
+  - devichand579/MAC
   - devichand579/HPT
   - devichand579/Instance_seg_teeth
   - devichand579/awesome_Cog_NeurSymAI_papers
