@@ -32,7 +32,7 @@ My research boradly touches areas like evolutionary computation, sample efficien
 If you want to evolve in a tiny new world, far simpler than human lives, you can go <a href="{{ '/world/' | relative_url }}">here</a>!!
 
 
-I had completed my Dual Degree (B.Tech + M.Tech) in Computer Science and Engineering at the <a href="https://cse.iitkgp.ac.in/">Department of Computer Science and Engineering</a>, <a href="https://www.iitkgp.ac.in/">IIT Kharagpur</a> Under the supervision of <a href="https://cse.iitkgp.ac.in/~pawang/">Dr. Pawan Goyal</a> and <a href="https://www.microsoft.com/en-us/research/people/gmanish/">Dr. Manish Gupta</a>.
+I had completed my Dual Degree (B.Tech + M.Tech) in Computer Science and Engineering from <a href="https://www.iitkgp.ac.in/">IIT Kharagpur</a> under the supervision of <a href="https://cse.iitkgp.ac.in/~pawang/">Dr. Pawan Goyal</a> and <a href="https://www.microsoft.com/en-us/research/people/gmanish/">Dr. Manish Gupta</a>.
 
 
 
