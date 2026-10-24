@@ -6,4 +6,4 @@ related_posts: false
 published: true
 ---
 
-Started as undergraduate researcher at IIT Kharagpur under the supervision of prof. Pawan Goyal and Dr. Manish Gupta.
+Started as undergraduate researcher at IIT Kharagpur, advised by Pawan Goyal and Manish Gupta.

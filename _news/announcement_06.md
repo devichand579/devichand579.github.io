@@ -6,4 +6,4 @@ related_posts: false
 published: true
 ---
 
-Started my position as research fellow at Artificial Intelligence Institute of South Carolina under the supervision of Dr.Amit Sheth.
+Started my position as research fellow at Artificial Intelligence Institute of South Carolina, advised by Amit Sheth.

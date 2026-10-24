@@ -6,4 +6,4 @@ related_posts: false
 published: true
 ---
 
-Received the AMD GPU Open Research Grant for my master's thesis with Dr. Pawan Goyal.
+Received the AMD GPU Open Research Grant for my master's thesis, advised by Pawan Goyal.

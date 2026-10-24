@@ -6,4 +6,4 @@ related_posts: false
 published: true
 ---
 
-Started my research internship at Queen Mary University of London under the supervision of Dr.Ahmed M. A. Sayed.
+Started my research internship at Queen Mary University of London, advised by Ahmed M. A. Sayed.

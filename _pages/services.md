@@ -19,8 +19,8 @@ nav_order: 5
 
 ## Teaching
 
-- **Teaching Assistant**, Deep Learning, IIT Kharagpur, with Prof. Pawan Goyal
-- **Teaching Assistant**, Compilers Theory and Laboratory, IIT Kharagpur, with Prof. Aritra Hazra
+- **Teaching Assistant**, Deep Learning, IIT Kharagpur
+- **Teaching Assistant**, Compilers Theory and Laboratory, IIT Kharagpur
 
 ## Conferences and schools
 
