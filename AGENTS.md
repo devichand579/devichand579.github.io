@@ -43,13 +43,9 @@ Blog posts use `layout: post` and the filename date. Permalink is `/blog/:year/:
 
 Publications are BibTeX. Put the author as `Budagam, Devichand` so Jekyll Scholar can match `scholar.last_name` / `scholar.first_name`. `selected={true}` pins the paper on the about page. `preview={router.jpg}` loads `assets/img/publication_preview/router.jpg`. Keep `bibtex_show={true}` when the entry should render.
 
-Internal links use the Liquid filter:
+Internal links use the `relative_url` filter. A link to the world page uses `'/world/' | relative_url` as the href.
 
-```liquid
-<a href="{{ '/world/' | relative_url }}">here</a>
-```
-
-The CV is page images, not a Markdown résumé. Replace `assets/img/cv/page-N.png` and update the `{% include figure.liquid %}` list in `_pages/cv.md` if the page count changes.
+The CV is page images, not a Markdown résumé. Replace `assets/img/cv/page-N.png` and update the `figure.liquid` includes in `_pages/cv.md` if the page count changes.
 
 ## Custom code
 
@@ -72,4 +68,4 @@ bundle exec jekyll serve
 
 Open the changed page and click through it. For layout or CSS changes, check light and dark mode and a narrow viewport.
 
-A push to `main` deploys when the workflow path filters match. `**/*.md` deploys, except `README.md`. Do not edit `gh-pages` by hand. Do not commit `_site/`, `.jekyll-cache/`, `vendor/`, `assets/libs/`, or `Gemfile.lock` (they are gitignored).
+A push to `main` deploys when the workflow path filters match. `**/*.md` deploys, except `README.md`. The deploy writes `.nojekyll` into the published site so GitHub Pages serves `gh-pages` as static files and does not run Jekyll again. Do not edit `gh-pages` by hand. Do not commit `_site/`, `.jekyll-cache/`, `vendor/`, `assets/libs/`, or `Gemfile.lock` (they are gitignored). `AGENTS.md` is excluded from the site output.
