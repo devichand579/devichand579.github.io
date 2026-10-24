@@ -5,3 +5,7 @@
 "KDD workshop":
   url: https://www.kdd.org/
   color: "#00369f"
+
+"Preprint":
+  url: https://arxiv.org/
+  color: "#b31b1b"
