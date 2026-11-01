@@ -1,0 +1,1212 @@
+---
+layout: post
+title: "000, 001, 010, ?"
+date: 2026-10-27 00:00:00-0400
+description: "Randomness depends on who is looking. What it means to learn, from Shannon and Solomonoff to evolution and deep learning."
+tags:
+  - evolution
+  - information theory
+  - intelligence
+related_posts: false
+---
+<style>
+/* Layout: one reading column beside a punched-tape rail. Chapters are tape cells numbered in binary; the demos are "instruments" set slightly wider than the text. */
+:root{
+  --paper: var(--global-bg-color);
+  --panel: color-mix(in srgb, var(--global-text-color) 6%, var(--global-bg-color));
+  --ink: var(--global-text-color);
+  --ink-soft: var(--global-text-color-light);
+  --rule: var(--global-divider-color);
+  --tape: color-mix(in srgb, var(--global-theme-color) 16%, var(--global-bg-color));
+  --zero: var(--global-theme-color);
+  --one: #b71c1c;
+  --display: inherit;
+  --body: inherit;
+  --mono: monospace;
+}
+html[data-theme="dark"]{
+  --one: #ff8a8a;
+  --panel: color-mix(in srgb, var(--global-text-color) 8%, var(--global-bg-color));
+  --tape: color-mix(in srgb, var(--global-theme-color) 22%, var(--global-bg-color));
+}
+.ltl, .ltl *{box-sizing:border-box}
+.ltl{
+  background:var(--paper); color:var(--ink);
+  font-family:var(--body); font-size:1.0625rem; line-height:1.68;
+  padding-inline:0;
+  padding-block:0 4rem;
+  overflow-x:hidden;
+}
+.ltl a{color:inherit; text-underline-offset:3px}
+.ltl a:hover{color:inherit}
+.ltl :focus-visible{outline:2px solid var(--ink); outline-offset:3px}
+.ltl ::selection{background:var(--rule); color:inherit}
+
+.ltl .col{max-width:none; margin-inline:auto}
+.ltl .bench-wrap{max-width:none; margin-inline:auto}
+
+.ltl .rules{display:grid; gap:.4rem; margin:.4rem 0 1.2rem}
+.ltl .rule{display:flex; justify-content:space-between; align-items:center; gap:1rem; padding:.5rem .8rem; background:var(--panel); border-radius:4px}
+.ltl .rule:first-child{outline:1.5px solid var(--one)}
+.ltl .rule-txt{font-family:var(--mono); font-size:.85rem}
+.ltl .rule-next{display:flex; align-items:center; gap:.5rem; font-family:var(--mono); font-size:.8rem; color:var(--ink-soft); white-space:nowrap}
+.ltl .assume{display:grid; gap:.35rem; margin:.6rem 0 1.4rem}
+.ltl .assume a{display:flex; align-items:center; gap:.8rem; padding:.45rem .2rem; text-decoration:none; color:var(--ink); border-bottom:1px solid var(--rule)}
+.ltl .assume a:hover{color:var(--one)}
+
+/* ---------- hero ---------- */
+.ltl .hero{max-width:none; margin-inline:auto; padding-block:3.5rem 1.5rem}
+.ltl .eyebrow{font-family:var(--mono); font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft)}
+.ltl h1{
+  font-weight:500; font-size:2.25rem; line-height:1.25; letter-spacing:normal;
+  margin:.6rem 0 1.2rem;
+}
+
+.ltl .tape-stage{position:relative}
+.ltl #tapes{display:block; width:100%; height:270px; border-radius:4px; cursor:pointer}
+.ltl .tape-keys{display:grid; gap:4px; margin-top:.5rem}
+.ltl .tape-keys button{
+  font-family:var(--mono); font-size:.72rem; line-height:1.2; padding:.45rem .2rem;
+  background:transparent; color:var(--ink); border:1px solid var(--rule); border-radius:3px; cursor:pointer;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.ltl .tape-keys button[aria-pressed="true"]{border-color:var(--one); color:var(--one)}
+.ltl .tape-note{
+  margin-top:.9rem; display:grid; grid-template-columns:minmax(0,1fr) auto; gap:.5rem 1rem; align-items:start;
+  font-size:.98rem;
+}
+.ltl .tape-note .prog{font-family:var(--mono); font-size:.85rem; color:var(--one)}
+.ltl .tape-note .riddle{color:var(--ink-soft)}
+.ltl .linkish{font-family:var(--mono); font-size:.78rem; background:none; border:none; color:var(--zero); text-decoration:underline; cursor:pointer; padding:0}
+
+/* ---------- chapters ---------- */
+.ltl .ch-head{max-width:none; margin-inline:auto; display:grid; gap:.7rem}
+.ltl .cell{display:flex; align-items:center}
+.ltl .holes{display:inline-flex; gap:5px; padding:6px 9px; background:var(--tape); border-radius:3px}
+.ltl .holes i{width:10px; height:10px; border-radius:50%; border:1.5px solid var(--ink); opacity:.35}
+.ltl .holes i.on{background:var(--ink); opacity:1}
+.ltl h2{
+  font-weight:500; font-size:1.75rem; line-height:1.3; margin:0;
+}
+.ltl h3{font-weight:500; font-size:1.35rem; line-height:1.35; margin:2.4rem 0 .4rem}
+.ltl h4{font-family:var(--mono); font-weight:600; font-size:.78rem; letter-spacing:.1em; text-transform:uppercase; margin:0 0 .4rem; color:var(--ink-soft)}
+.ltl p{margin:0 0 1rem}
+.ltl .lede{font-size:1.18rem; line-height:1.55}
+.ltl dfn{font-style:normal; font-weight:600; background:none}
+.ltl .eq{
+  font-family:var(--body); font-style:italic; font-size:1.12rem; text-align:center;
+  margin:1.2rem 0; padding:.7rem 1rem; border-block:1px solid var(--rule); overflow-x:auto;
+}
+.ltl .eq b{font-style:normal; font-weight:600}
+.ltl code, .ltl .mono{font-family:var(--mono); font-size:.86em}
+.ltl .b0, .ltl .b1{color:inherit; font-weight:600}
+.ltl .aside{border-left:3px solid var(--rule); padding:.2rem 0 .2rem 1rem; margin:1.6rem 0; color:var(--ink)}
+.ltl .aside h4{color:inherit}
+.ltl .small{font-size:.92rem; color:var(--ink-soft)}
+.ltl ul.tight{padding-left:1.1rem; margin:0 0 1rem}
+.ltl ul.tight li{margin-bottom:.35rem}
+
+/* ---------- instruments ---------- */
+.ltl .bench{
+  background:var(--panel); border:1px solid var(--rule); border-radius:6px;
+  padding:1.3rem clamp(1rem, 3vw, 1.8rem); margin:2rem 0; min-width:0;
+}
+.ltl .bench-title{display:flex; flex-wrap:wrap; gap:.4rem 1rem; align-items:baseline; justify-content:space-between; margin-bottom:.9rem}
+.ltl .bench-title strong{font-family:var(--display); font-stretch:75%; font-weight:800; font-size:1.25rem}
+.ltl .bench-title span{font-family:var(--mono); font-size:.74rem; color:var(--ink-soft); letter-spacing:.06em}
+.ltl .keys{display:flex; flex-wrap:wrap; gap:.5rem; margin:.6rem 0}
+.ltl .key{
+  font-family:var(--mono); font-size:.82rem; padding:.45rem .85rem; cursor:pointer;
+  background:var(--paper); color:var(--ink); border:1.5px solid var(--ink); border-radius:4px;
+}
+.ltl .key:hover{background:var(--ink); color:var(--paper)}
+.ltl .key.ghost{border-style:dashed}
+.ltl .key[aria-pressed="true"]{background:var(--ink); color:var(--paper)}
+.ltl .readout{font-family:var(--mono); font-size:.86rem; font-variant-numeric:tabular-nums}
+.ltl .grid2{display:grid; grid-template-columns:repeat(auto-fit, minmax(16rem,1fr)); gap:1.2rem}
+.ltl .grid2 > *{min-width:0}
+
+.ltl svg text{font-family:var(--mono)}
+.ltl .totals{display:grid; grid-template-columns:repeat(auto-fit, minmax(11rem,1fr)); gap:.8rem; margin:.8rem 0}
+.ltl .totals > div{min-width:0}
+.ltl .totals .big{font-family:var(--display); font-stretch:70%; font-weight:800; font-size:2rem; line-height:1; font-variant-numeric:tabular-nums}
+.ltl .totals .lbl{font-family:var(--mono); font-size:.7rem; color:var(--ink-soft); letter-spacing:.05em}
+
+/* tables */
+.ltl .tbl-wrap{overflow-x:auto; margin:1.2rem 0}
+.ltl table{border-collapse:collapse; width:100%; font-size:.92rem}
+.ltl th, .ltl td{text-align:left; vertical-align:top; padding:.55rem .7rem .55rem 0; border-bottom:1px solid var(--rule)}
+.ltl th{font-family:var(--mono); font-size:.72rem; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-soft); font-weight:600}
+.ltl td.mono, .ltl td .mono{font-family:var(--mono); font-size:.82rem}
+
+/* ladder */
+.ltl .ladder{display:grid; gap:0; margin:1.6rem 0; counter-reset:none}
+.ltl .rung{display:grid; grid-template-columns:7.5rem minmax(0,1fr); gap:1.2rem; padding:1rem 0; border-top:1px solid var(--rule)}
+.ltl .rung:last-child{border-bottom:1px solid var(--rule)}
+.ltl .rung .when{font-family:var(--mono); font-size:.78rem; color:var(--ink-soft)}
+.ltl .rung .when b{display:block; font-family:var(--display); font-stretch:70%; font-weight:850; font-size:1.25rem; color:var(--ink); line-height:1.05; margin-top:.2rem}
+.ltl .rung .what{min-width:0}
+.ltl .rung dl{display:grid; grid-template-columns:auto minmax(0,1fr); gap:.15rem .8rem; margin:.4rem 0 0; font-size:.93rem}
+.ltl .rung dt{font-family:var(--mono); font-size:.72rem; color:var(--ink-soft); padding-top:.2rem; letter-spacing:.04em}
+.ltl .rung dd{margin:0}
+.ltl .gen{display:inline-block; font-family:var(--mono); font-size:.72rem; padding:1px 7px; border-radius:20px; border:1px solid currentColor; margin-left:.3rem; vertical-align:2px}
+@media (max-width:560px){ .ltl .rung{grid-template-columns:1fr; gap:.3rem} }
+
+/* rings */
+.ltl .rings{display:grid; grid-template-columns:minmax(0,22rem) minmax(0,1fr); gap:1.6rem; align-items:center}
+@media (max-width:720px){ .ltl .rings{grid-template-columns:1fr} }
+.ltl #ringsvg{width:100%; max-width:22rem; height:auto; display:block; margin-inline:auto}
+.ltl #ringsvg circle{fill:none; stroke-width:1.5}
+.ltl #ringsvg text{font-size:11px; fill:var(--ink); text-anchor:middle}
+
+/* rail */
+.ltl .rail{display:none}
+@media (min-width:1260px){
+  .ltl .rail{
+    display:flex; flex-direction:column; gap:6px; position:fixed; z-index:5;
+    left:calc(env(safe-area-inset-left, 0px) + 22px); top:50%; transform:translateY(-50%);
+    background:var(--tape); padding:10px 8px; border-radius:4px;
+  }
+  .ltl .rail a{display:flex; gap:4px; padding:3px; border-radius:2px; text-decoration:none}
+  .ltl .rail a i{width:8px; height:8px; border-radius:50%; border:1.5px solid var(--ink); opacity:.3}
+  .ltl .rail a i.on{background:var(--ink); opacity:.9}
+  .ltl .rail a.active{outline:1.5px solid var(--one)}
+  .ltl .rail a.active i.on{background:var(--one); border-color:var(--one); opacity:1}
+}
+
+
+.ltl .qsec{padding-block:1rem 0}
+.ltl .part-h{margin:.3rem 0 .8rem}
+.ltl .qgrid{max-width:none; margin:2rem auto 1rem; display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap:1.2rem}
+.ltl .qcard{min-width:0; background:var(--panel); border:1px solid var(--rule); border-radius:6px; padding:0 1.3rem 1.2rem; overflow:hidden; display:flex; flex-direction:column}
+.ltl .qcard .qca{display:block; width:calc(100% + 2.6rem); margin:0 -1.3rem .9rem; height:42px}
+.ltl .qhead{display:flex; align-items:center; gap:.6rem}
+.ltl .qcard h3{font-size:clamp(1.45rem, 2.6vw, 1.85rem); font-stretch:66%; font-weight:850; margin:.5rem 0 .5rem}
+.ltl .qcard .why{font-size:.97rem}
+.ltl .bgl{margin-top:auto; display:flex; flex-wrap:wrap; gap:.45rem; align-items:center}
+.ltl a.chip{display:inline-flex; text-decoration:none; padding:0; border:none; background:none; border-radius:3px; line-height:0}
+.ltl a.chip:hover .holes{outline:1.5px solid var(--one)}
+.ltl a.chip:hover .holes i.on{background:var(--one); border-color:var(--one); opacity:1}
+.ltl .part-banner{margin-top:5rem; padding-block:2.4rem 0; border-top:2px solid var(--ink)}
+.ltl .reading-sec{padding-top:4rem}
+
+/* ---------- art layer ---------- */
+.ltl .grain{position:fixed; inset:0; pointer-events:none; z-index:40; opacity:.07; mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");}
+html[data-theme="dark"] .ltl .grain{mix-blend-mode:screen; opacity:.05}
+.ltl section.ch{padding-block:3rem 0}
+.ltl #lens{display:block; width:100%}
+.ltl #land{display:block; width:100%; height:auto; aspect-ratio:16/9; border-radius:4px}
+.ltl .legend3{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:.8rem; margin-top:.8rem}
+.ltl .legend3 > div{min-width:0; border-top:3px solid var(--ink); padding-top:.45rem}
+.ltl .legend3 .l-r{border-color:var(--zero)} .ltl .legend3 .l-e{border-color:var(--one)}
+.ltl .legend3 h4{margin:0 0 .15rem}
+.ltl .legend3 .readout{font-size:.78rem}
+@media (max-width:560px){ .ltl .legend3{grid-template-columns:1fr} }
+.ltl .spin{transform-box:view-box; transform-origin:180px 180px; animation:spin linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){ .ltl *{transition:none!important; animation:none!important} }
+
+.post:has(.ltl) > .post-header{display:none}
+.ltl .hero{padding-top:.4rem}
+/* This essay is wider than the site's 930px column. Keep a side margin, and on wide screens leave room for the chapter rail. */
+.container:has(.ltl){max-width:min(1320px, calc(100vw - 2.5rem))}
+@media (min-width:1260px){
+  .container:has(.ltl){max-width:min(1320px, calc(100vw - 12rem))}
+}
+
+
+.ltl .cites{font-family:var(--mono); font-size:.7em; vertical-align:.42em; line-height:0; white-space:nowrap; color:var(--ink-soft); margin-left:.12em}
+.ltl a.cite{text-decoration:none; color:var(--zero)}
+.ltl a.cite:hover{color:var(--one); text-decoration:underline}
+.ltl .refs{font-size:.88rem; padding-left:2.4rem; margin:1rem 0 0}
+.ltl .refs li{margin-bottom:.5rem; line-height:1.45; scroll-margin-top:5rem; padding:.1rem .3rem; border-radius:3px}
+.ltl .refs li:target{background:var(--tape)}
+.ltl .bridge{font-style:italic; color:var(--ink-soft); border-top:1px solid var(--rule); padding-top:.8rem; margin-top:1.8rem}
+.ltl .prologue{padding-block:2rem 0}
+.ltl .bgl-l{font-family:var(--mono); font-size:.68rem; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-soft)}
+.ltl #threads{padding-top:3rem}
+
+/* Site type, and no second text color. Instruments keep their marks. */
+.ltl, .ltl *{font-family:inherit !important; font-stretch:normal !important}
+.ltl code, .ltl .mono{font-family:monospace !important}
+.ltl a, .ltl a:hover, .ltl .b0, .ltl .b1, .ltl .aside h4,
+.ltl .tape-note .prog, .ltl .linkish,
+.ltl a.cite, .ltl a.cite:hover{color:inherit}
+.ltl .open-row{display:flex; flex-wrap:wrap; gap:.55rem; align-items:center; margin:.2rem 0 1.1rem}
+.ltl button.holes{appearance:none; cursor:pointer; color:inherit; font:inherit; border:1px dashed var(--ink)}
+.ltl button.holes:disabled{border-style:solid; cursor:default}
+.ltl .asks{list-style:none; padding:0; margin:.6rem 0 1.4rem; display:grid; gap:.45rem}
+.ltl .asks li{font-family:var(--display); font-stretch:78%; font-weight:700; font-size:clamp(1.1rem, 2.4vw, 1.35rem); line-height:1.25; padding-left:1.1rem; border-left:3px solid var(--rule)}
+.ltl .asks li:last-child{border-color:var(--one)}
+
+.ltl .tagline{font-family:var(--mono); font-size:.8rem; letter-spacing:.14em; text-transform:uppercase; color:var(--one); margin:-.4rem 0 1.4rem}
+.ltl .relsec{margin-top:5rem}
+.ltl .rel-hero{border-top:2px solid var(--ink); padding-top:2.6rem}
+.ltl .rel-hero h2{font-family:var(--display); font-weight:900; font-stretch:58%; font-size:clamp(2.8rem, 9vw, 5.6rem); line-height:.88; margin:.4rem 0 1.2rem; transition:font-stretch .8s cubic-bezier(.2,.7,.1,1)}
+.ltl .rel-hero:hover h2{font-stretch:96%}
+.ltl .rel-hero h2 .one{color:var(--one)}
+.ltl .posts{display:grid; gap:0; margin-top:1.6rem}
+.ltl .post{display:grid; grid-template-columns:4.2rem minmax(0,1fr); gap:1.4rem; padding:2.2rem 0; border-top:1px solid var(--rule)}
+.ltl .pcode{display:flex; flex-direction:column; align-items:center; gap:.8rem}
+.ltl .pcode .holes{flex-direction:column; padding:8px 7px}
+.ltl .plab{font-family:var(--mono); font-size:.62rem; letter-spacing:.2em; color:var(--ink-soft); writing-mode:vertical-rl; transform:rotate(180deg)}
+.ltl .post h3{font-family:var(--display); font-weight:900; font-stretch:62%; font-size:clamp(1.7rem, 4.4vw, 2.6rem); line-height:.98; margin:0 0 .9rem; text-wrap:balance; transition:font-stretch .6s cubic-bezier(.2,.7,.1,1), color .4s}
+.ltl .post:hover h3{font-stretch:88%; color:var(--one)}
+.ltl .post .open{font-family:var(--mono); font-size:.8rem; line-height:1.5; color:var(--one); margin:.6rem 0 0}
+.ltl .ubig{font-family:var(--display); font-stretch:70%; font-weight:850; font-size:2.1rem; line-height:1; font-variant-numeric:tabular-nums}
+.ltl .o-r{color:var(--zero)} .ltl .o-c{color:var(--one)} .ltl .o-d{color:var(--ink)}
+.ltl #uni{display:block; width:100%; border-radius:4px; image-rendering:pixelated}
+@media (max-width:560px){ .ltl .post{grid-template-columns:1fr; gap:.6rem} .ltl .pcode{flex-direction:row} .ltl .pcode .holes{flex-direction:row} .ltl .plab{writing-mode:horizontal-tb; transform:none} }
+@media (prefers-reduced-motion:reduce){ .ltl .rel-hero:hover h2, .ltl .post:hover h3{font-stretch:inherit} }
+
+.ltl .hero .dek{font-size:1.25rem; margin:0 0 1rem}
+.ltl .promise{font-size:1.05rem; margin:1.2rem 0 0}
+.ltl .readtime{display:block; margin-top:.4rem; font-family:var(--mono); font-size:.78rem; color:var(--ink-soft)}
+.ltl details.fold{cursor:default}
+.ltl details.fold > summary{list-style:none; display:flex; align-items:baseline; gap:.8rem; cursor:pointer}
+.ltl details.fold > summary::-webkit-details-marker{display:none}
+.ltl details.fold > summary h4{margin:0}
+.ltl .fold-hint{font-family:var(--mono); font-size:.7rem; color:var(--ink-soft)}
+.ltl details.fold[open] .fold-hint{display:none}
+.ltl details.fold > :not(summary){margin-top:.6rem}
+.ltl .bridge{font-weight:600}
+.ltl .build{font-size:.94rem; margin:.2rem 0 1rem; padding-left:.7rem; border-left:2px solid var(--one)}
+.ltl .build span{font-family:var(--mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--one); margin-right:.3rem}
+</style>
+<div class="ltl">
+<div class="grain" aria-hidden="true"></div>
+<nav class="rail" id="rail" aria-label="Chapters"></nav>
+<header class="hero">
+  <h1>000, 001, 010, ?</h1>
+  <p class="tagline">randomness depends on who is looking</p>
+  <p class="dek">One tiny universe. Three observers read every part of it, with the same mind, in a different order. Watch the numbers: to two of them this world is noise, and to the third it has a pattern. Which of them is right?</p>
+<div class="bench-wrap"><div class="bench">
+    <div class="bench-title"><strong>One universe, three observers</strong><span>INSTRUMENT · same world, different order</span></div>
+    <p class="small">This is a tiny universe that runs on one simple rule, with time flowing downward. Three observers each see every cell of it exactly once, but in a different order. The <b class="o-r">row reader</b> sees the whole world at each moment. The <b class="o-c">cell dweller</b> lives in one cell and hears its whole history, then moves to the next. The <b class="o-d">light-ray rider</b> travels diagonally, one cell per moment, like a signal. All three have the same small mind: each predicts the next cell from only the last few it saw<span class="cites">[<a class="cite" href="#ref-krichevsky81" title="R. Krichevsky and V. Trofimov (1981). The performance of universal encoding. IEEE Transactions on Information Theory 27(2).">1</a>, <a class="cite" href="#ref-cleary84" title="J. G. Cleary and I. H. Witten (1984). Data compression using adaptive coding and partial string matching. IEEE Transactions on Communications 32(4).">2</a>]</span>. The number under each is how surprised it is per cell. Around 1 means the world looks like coin flips to it; lower means it has found a pattern.</p>
+    <canvas id="uni" aria-label="Cellular automaton with three moving read heads, one per observer"></canvas>
+    <div class="grid2" style="align-items:center; margin-top:.8rem">
+      <div class="keys" role="group" aria-label="Choose the universe"><button class="key" type="button" data-urule="110" aria-pressed="false">Rule 110</button><button class="key" type="button" data-urule="30" aria-pressed="true">Rule 30</button><button class="key" type="button" data-urule="54" aria-pressed="false">Rule 54</button></div>
+      <label class="small" for="uniK">How many past cells each observer remembers: <span class="readout" id="uniKV"></span><br><input type="range" id="uniK" min="1" max="12" step="1" value="8" style="width:100%"></label>
+    </div>
+    <div class="legend3">
+      <div class="l-r"><h4>Row reader</h4><div class="ubig" id="uR">–</div><div class="readout">bits per cell</div></div>
+      <div class="l-e"><h4>Cell dweller</h4><div class="ubig" id="uC">–</div><div class="readout">bits per cell</div></div>
+      <div class="l-g"><h4>Light-ray rider</h4><div class="ubig" id="uD">–</div><div class="readout">bits per cell</div></div>
+    </div>
+    <p class="readout" id="uNote" aria-live="polite"></p>
+    <div class="keys"><button class="key ghost" id="uniRun" type="button">Run again</button></div>
+  </div></div>
+  <p class="promise">Keep that question. By the end of this post you will see why all three are right, and why I think that is the most important fact about learning. <span class="readtime">About 30 minutes. In a hurry? Play the <a href="#openQ">game</a>, read the <a href="#assume">six assumptions</a>, then jump to <a href="#relativity">part four</a>.</span></p>
+</header>
+<main>
+<section id="open" class="prologue">
+  <div class="col">
+    <div class="eyebrow">Part one · what it means to learn</div>
+    <p class="lede">What does it mean to learn something?</p>
+    <p>I have been curious about this question for a long time, and it keeps opening into others.</p>
+    <ul class="asks">
+      <li>How can we tell that a learner has learned some information?</li>
+      <li>Can the same information be learned in different ways?</li>
+      <li>What is information in the first place, and is it the same for everyone who looks at it?</li>
+      <li>Is evolution a way of learning?</li>
+      <li>If it is, is evolution itself a program running on some larger machine? Are we learners living inside other learners?</li>
+    </ul>
+    <p>I don’t have final answers. This blog is my attempt to think through these questions using information theory, Solomonoff induction and evolution, to follow how they converge in what we now call deep learning, and to point out the problems I think are most worth solving next.  </p>
+    <p>If you are reading on a wide screen (hoping you are not a LLM), you may have noticed the grid of dots to the leftside of the margin, and perhaps already guessed what it means. The title is the same puzzle. Here it is as a game. Each box below is a row of dots, filled or empty. What comes next?</p>
+    <div class="open-row">
+      <span class="holes" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="holes" aria-hidden="true"><i></i><i></i><i class="on"></i></span>
+      <span class="holes" aria-hidden="true"><i></i><i class="on"></i><i></i></span>
+      <button class="holes" id="openQ" type="button" aria-label="The next box">?</button>
+    </div>
+    <p>Read a filled dot as 1 and an empty one as 0, and the boxes say 000, 001, 010. They are counting in binary, so the next box is 011. The same code indexes every question and chapter on this page, which is why the grid of dots works as a table of contents.</p>
+    <h2 class="part-h">What just happened</h2>
+    <p>You saw three boxes and found a rule that fits them, “count up”. You then used the rule to say something about a box you had not seen. That is what this page means by <dfn>learning</dfn>: finding a short rule that explains what you have seen, and using it to predict what you have not.</p>
+    <p>But “count up” was not the only rule that fits. Here are three, all consistent with the same three boxes:</p>
+    <div class="rules">
+      <div class="rule"><span class="rule-txt">count up</span><span class="rule-next"><span class="holes" aria-hidden="true"><i></i><i class="on"></i><i class="on"></i></span> 011</span></div>
+      <div class="rule"><span class="rule-txt">count up to 010, then start over</span><span class="rule-next"><span class="holes" aria-hidden="true"><i></i><i></i><i></i></span> 000</span></div>
+      <div class="rule"><span class="rule-txt">count up to 010, then count down</span><span class="rule-next"><span class="holes" aria-hidden="true"><i></i><i></i><i class="on"></i></span> 001</span></div>
+    </div>
+    <p>Each one predicts a different next box, and the data so far cannot tell them apart. In fact infinitely many rules fit. You did not weigh them all; you went straight for the shortest. Every learner faces this choice, and the preference for short rules is what makes learning from a few examples possible at all.</p>
+    <h2 class="part-h">Solomonoff’s ideal learner</h2>
+    <p>In 1964 Ray Solomonoff turned that instinct into a precise recipe<span class="cites">[<a class="cite" href="#ref-solomonoff64" title="R. J. Solomonoff (1964). A formal theory of inductive inference, parts I and II. Information and Control 7.">3</a>]</span>. Write every rule as a computer program. Then:</p>
+    <ol class="tight">
+      <li><b>Keep every rule.</b> Every program that fits the data so far stays in play.</li>
+      <li><b>Trust short rules more.</b> Each program’s weight halves with every extra bit of length.</li>
+      <li><b>Let the evidence vote.</b> Predict the next box by the weighted vote of the surviving rules. When the box arrives, drop every rule it contradicts.</li>
+    </ol>
+    <p>The recipe comes with a promise. If the sequence is produced by any rule a computer could follow, the learner’s total mistakes over all time are bounded by the length of that rule in bits<span class="cites">[<a class="cite" href="#ref-solomonoff78" title="R. J. Solomonoff (1978). Complexity-based induction systems: comparisons and convergence theorems. IEEE Transactions on Information Theory 24(4).">4</a>, <a class="cite" href="#ref-hutter05" title="M. Hutter (2005). Universal Artificial Intelligence: Sequential Decisions Based on Algorithmic Probability. Springer.">5</a>]</span>. Simple worlds are learned almost at once, and no learner does much better in the long run. This is <dfn>Solomonoff induction</dfn>.</p>
+    <h2 class="part-h">Why no one can run it</h2>
+    <p>The promise rests on assumptions no real learner can make. Some programs never finish running, and no procedure can tell which ones, so the recipe can never actually be carried out<span class="cites">[<a class="cite" href="#ref-hutter05" title="M. Hutter (2005). Universal Artificial Intelligence: Sequential Decisions Based on Algorithmic Probability. Springer.">5</a>]</span>. Evolution, brains and the networks we train are learners that can be built, and each one has to give up something Solomonoff took for granted. He assumed:</p>
+    <div class="assume" id="assume">
+      <a href="#q1"><span class="holes" aria-hidden="true"><i></i><i></i><i class="on"></i></span><span>a fixed language for writing rules, in which “short” is measured</span></a>
+      <a href="#q2"><span class="holes" aria-hidden="true"><i></i><i class="on"></i><i></i></span><span>every possible rule already on the table, ready to be weighed</span></a>
+      <a href="#q3"><span class="holes" aria-hidden="true"><i></i><i class="on"></i><i class="on"></i></span><span>that length is the only cost, and running time is free</span></a>
+      <a href="#q4"><span class="holes" aria-hidden="true"><i class="on"></i><i></i><i></i></span><span>unlimited time to check each rule against the data</span></a>
+      <a href="#q5"><span class="holes" aria-hidden="true"><i class="on"></i><i></i><i class="on"></i></span><span>data that arrives in one fixed order</span></a>
+      <a href="#q6"><span class="holes" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i></span><span>a learner that only watches, and never chooses what to look at</span></a>
+    </div>
+    <p>Drop any one of these and a question opens up. Part two builds, one chapter at a time, the tools needed to see why each is hard. Part three states the six questions properly, with what we would build. Part four goes further, and gets strange: if learners are programs running inside other learners, then information, order, cost and even randomness depend on who is looking.</p>
+  </div>
+</section>
+<div class="part-banner"><div class="col"><div class="eyebrow">Part two · the machinery</div><h2 class="part-h">The tools, one at a time</h2><p>Each chapter adds one idea and uses only the ones before it, and ends with the question the next one answers. The dots beside each title are its number. Know information theory already? <a href="#c3">Skip to the perfect learner</a>.</p></div></div>
+<section class="ch" id="c0" data-code="0001">
+  <div class="ch-head"><div class="cell"></div><h2>Information is a short description</h2></div>
+  <div class="col">
+    <p class="lede">Before we can say what a pattern is, we need a way to measure information. There are two classic answers. The first measures surprise; the second measures the length of a description.</p>
+    <h3>Shannon: information as surprise</h3>
+    <p>Suppose you know how likely each possible outcome is. That assignment of likelihoods is a <dfn>probability distribution</dfn>. Shannon proposed that an outcome you gave probability <i>p</i> carries −log₂ <i>p</i> <dfn>bits</dfn> of information<span class="cites">[<a class="cite" href="#ref-shannon48" title="C. E. Shannon (1948). A mathematical theory of communication. Bell System Technical Journal 27.">6</a>]</span>. A fair coin’s outcome carries 1 bit; an event you thought had a 1-in-1024 chance carries 10. The average over all outcomes is the distribution’s <dfn>entropy</dfn>, written <i>H</i><span class="cites">[<a class="cite" href="#ref-shannon48" title="C. E. Shannon (1948). A mathematical theory of communication. Bell System Technical Journal 27.">6</a>]</span>.</p>
+    <p>Shannon’s measure needs a known distribution, and it describes a whole collection of possible outcomes rather than any one of them. It cannot tell you how much information is in one particular string.</p>
+    <details class="aside fold"><summary><h4>Why logarithms appear everywhere</h4><span class="fold-hint">expand</span></summary><p>With <i>b</i> bits you can name 2<sup><i>b</i></sup> different things, so picking one out of <i>N</i> takes log₂ <i>N</i> bits. Probabilities of independent events multiply, while amounts of information should add. Up to the choice of base, the logarithm is the only well-behaved function that turns products into sums<span class="cites">[<a class="cite" href="#ref-shannon48" title="C. E. Shannon (1948). A mathematical theory of communication. Bell System Technical Journal 27.">6</a>]</span>. The base only sets the unit.</p></details>
+    <h3>Programs, and the machines that run them</h3>
+    <p>The second answer needs the idea of a program. A <dfn>Turing machine</dfn> is Turing’s model of a computer: a device that reads and writes symbols on a tape according to a fixed table of rules<span class="cites">[<a class="cite" href="#ref-turing36" title="A. M. Turing (1936). On computable numbers, with an application to the Entscheidungsproblem. Proceedings of the London Mathematical Society s2-42.">7</a>]</span>. Turing also showed that a single such machine can imitate any other, if it is handed a description of that machine as input<span class="cites">[<a class="cite" href="#ref-turing36" title="A. M. Turing (1936). On computable numbers, with an application to the Entscheidungsproblem. Proceedings of the London Mathematical Society s2-42.">7</a>]</span>. This is a <dfn>universal Turing machine</dfn>, which we write <i>U</i>. For it, programs are just data. Every ordinary computer is universal in this sense.</p>
+    <h3>Kolmogorov: information as the shortest description</h3>
+    <p>Fix a universal machine <i>U</i>. The <dfn>Kolmogorov complexity</dfn> of a string <i>x</i> is the length, in bits, of the shortest program that makes <i>U</i> print <i>x</i>. Solomonoff, Kolmogorov and Chaitin reached this idea independently in the 1960s<span class="cites">[<a class="cite" href="#ref-solomonoff64" title="R. J. Solomonoff (1964). A formal theory of inductive inference, parts I and II. Information and Control 7.">3</a>, <a class="cite" href="#ref-kolmogorov65" title="A. N. Kolmogorov (1965). Three approaches to the quantitative definition of information. Problems of Information Transmission 1; English version in International Journal of Computer Mathematics 2 (1968).">8</a>, <a class="cite" href="#ref-chaitin66" title="G. J. Chaitin (1966). On the length of programs for computing finite binary sequences. Journal of the ACM 13(4).">9</a>]</span>. Writing |<i>p</i>| for the length of a program <i>p</i>:</p>
+    <div class="eq">K(x) = min { |p| : U(p) = x }</div>
+    <ul class="tight">
+      <li>A thousand zeros: about log₂ 1000 ≈ 10 bits, because you only need to say “1000 zeros”<span class="cites">[<a class="cite" href="#ref-livitanyi" title="M. Li and P. Vitányi (2019). An Introduction to Kolmogorov Complexity and Its Applications, 4th ed. Springer.">10</a>]</span>.</li>
+      <li>The first thousand binary digits of π: also short, because a program that computes π is short<span class="cites">[<a class="cite" href="#ref-livitanyi" title="M. Li and P. Vitányi (2019). An Introduction to Kolmogorov Complexity and Its Applications, 4th ed. Springer.">10</a>]</span>.</li>
+      <li>A thousand fair coin flips: almost always about a thousand bits. There is nothing to exploit<span class="cites">[<a class="cite" href="#ref-livitanyi" title="M. Li and P. Vitányi (2019). An Introduction to Kolmogorov Complexity and Its Applications, 4th ed. Springer.">10</a>]</span>.</li>
+    </ul>
+    <p>Two facts shape everything that follows. <b>Invariance:</b> switching to another universal machine changes <i>K</i> by at most a constant, roughly the length of a program that lets one machine imitate the other<span class="cites">[<a class="cite" href="#ref-solomonoff64" title="R. J. Solomonoff (1964). A formal theory of inductive inference, parts I and II. Information and Control 7.">3</a>, <a class="cite" href="#ref-kolmogorov65" title="A. N. Kolmogorov (1965). Three approaches to the quantitative definition of information. Problems of Information Transmission 1; English version in International Journal of Computer Mathematics 2 (1968).">8</a>]</span>. So <i>K</i> belongs to the string itself, up to that constant. <b>Uncomputability:</b> no program can compute <i>K</i><span class="cites">[<a class="cite" href="#ref-livitanyi" title="M. Li and P. Vitányi (2019). An Introduction to Kolmogorov Complexity and Its Applications, 4th ed. Springer.">10</a>]</span>. If one could, a short program could search for “the first string whose complexity is above <i>N</i>” and print it, describing a complex string in about log <i>N</i> bits. That contradiction is a version of the Berry paradox<span class="cites">[<a class="cite" href="#ref-livitanyi" title="M. Li and P. Vitányi (2019). An Introduction to Kolmogorov Complexity and Its Applications, 4th ed. Springer.">10</a>]</span>. What you can always do is find <em>some</em> program for <i>x</i>, which bounds <i>K</i>(<i>x</i>) from above.</p>
+  </div>
+  <div class="col">
+    <p>Any compressor gives an upper bound on <i>K</i>: the length of the compressed file plus the size of a fixed decompressor<span class="cites">[<a class="cite" href="#ref-livitanyi" title="M. Li and P. Vitányi (2019). An Introduction to Kolmogorov Complexity and Its Applications, 4th ed. Springer.">10</a>]</span>. <span class="mono">Rule 30</span> is a <dfn>cellular automaton</dfn>, a row of cells that each update by looking at their two neighbours under a fixed rule<span class="cites">[<a class="cite" href="#ref-wolfram02" title="S. Wolfram (2002). A New Kind of Science. Wolfram Media.">11</a>]</span>. <span class="mono">Xorshift</span> is a random-number generator three lines long. Both come from tiny programs, so their <i>K</i> is small, yet a simple compressor finds nothing to exploit. A compressor is an observer with limited cleverness and limited time. That idea returns in chapter 0110.</p>
+    <p class="bridge">Some strings have no description much shorter than themselves. Are those exactly the random ones?</p>
+  </div>
+</section>
+<section class="ch" id="c1" data-code="0010">
+  <div class="ch-head"><div class="cell"></div><h2>Random means nothing shorter exists</h2></div>
+  <div class="col">
+    <p class="lede">Intuitively, a random sequence is one with no pattern. Chapter 0001 gave a way to say “no pattern”: no short description. This chapter tests that intuition, starting with your own eyes.</p>
+  </div>
+  <div class="bench-wrap"><div class="bench">
+    <div class="bench-title"><strong>Which tapes are random?</strong><span>INSTRUMENT · eight processes, one punch</span></div>
+  <div class="tape-stage">
+    <canvas id="tapes" aria-label="Eight scrolling paper tapes, each punched by a different process. Use the buttons below to reveal what wrote each tape."></canvas>
+    <div class="tape-keys" id="tapeKeys"></div>
+    <div class="tape-note" aria-live="polite">
+      <div id="tapeNote"><span class="riddle">Each tape was punched by a different process: a hole is a <span class="b1">1</span>, a blank is a <span class="b0">0</span>. Some were written by a one-line rule. One looks like coin flips. Tap a tape to see what wrote it.</span></div>
+      <button class="linkish" id="revealAll" type="button">Reveal all</button>
+    </div>
+  </div>
+  </div></div>
+  <div class="col">
+    <h3>Programs must mark their own end</h3>
+    <p>Kolmogorov’s definition hides a loophole. If the machine is told for free where a program ends, the program’s length carries extra information. Exploiting that, every infinite sequence, even a run of fair coin flips, has beginnings that look compressible<span class="cites">[<a class="cite" href="#ref-livitanyi" title="M. Li and P. Vitányi (2019). An Introduction to Kolmogorov Complexity and Its Applications, 4th ed. Springer.">10</a>]</span>. The fix, found independently by Levin and by Chaitin, is to require programs to be <dfn>prefix-free</dfn>: no valid program is the beginning of another<span class="cites">[<a class="cite" href="#ref-levin74" title="L. A. Levin (1974). Laws of information conservation (nongrowth) and aspects of the foundation of probability theory. Problems of Information Transmission 10(3).">12</a>, <a class="cite" href="#ref-chaitin75" title="G. J. Chaitin (1975). A theory of program size formally identical to information theory. Journal of the ACM 22(3).">13</a>]</span>. Telephone numbers work this way. The exchange connects you the moment a complete number has been dialled, without an “end” key.</p>
+    <p>Prefix-free codes obey the <dfn>Kraft inequality</dfn>:</p>
+    <div class="eq">Σ<sub>p</sub> 2<sup>−|p|</sup> ≤ 1</div>
+    <p>So program lengths behave like probabilities. Feed the machine fair coin flips as its program, and it reads exactly program <i>p</i> with probability 2<sup>−|p|</sup><span class="cites">[<a class="cite" href="#ref-livitanyi" title="M. Li and P. Vitányi (2019). An Introduction to Kolmogorov Complexity and Its Applications, 4th ed. Springer.">10</a>]</span>. From here on, <i>K</i> means complexity measured with prefix-free programs.</p>
+    <h3>Three definitions that turned out to be one</h3>
+    <p>A <dfn>statistical test</dfn> is a procedure that flags sequences with some rare property, such as having far more 1s than 0s. Three proposals for “random” use different intuitions:</p>
+    <ul class="tight">
+      <li><b>Typical:</b> a sequence is random if it passes every statistical test that a computer can carry out (Martin-Löf)<span class="cites">[<a class="cite" href="#ref-martinlof66" title="P. Martin-Löf (1966). The definition of random sequences. Information and Control 9(6).">14</a>]</span>.</li>
+      <li><b>Incompressible:</b> no beginning of it can be compressed by more than a fixed amount, <i>K</i>(x<sub>1..n</sub>) ≥ n − c (Levin, Chaitin)<span class="cites">[<a class="cite" href="#ref-chaitin75" title="G. J. Chaitin (1975). A theory of program size formally identical to information theory. Journal of the ACM 22(3).">13</a>]</span>.</li>
+      <li><b>Unpredictable:</b> no betting strategy a computer can carry out makes unlimited money on it (Schnorr).</li>
+    </ul>
+    <p>The three describe exactly the same sequences, which is why <dfn>Martin-Löf randomness</dfn> is treated as the standard definition. For finite strings there is no sharp line, only degrees: how far <i>K</i>(<i>x</i>) falls below the length of <i>x</i><span class="cites">[<a class="cite" href="#ref-livitanyi" title="M. Li and P. Vitányi (2019). An Introduction to Kolmogorov Complexity and Its Applications, 4th ed. Springer.">10</a>]</span>.</p>
+    <h3>The halting problem</h3>
+    <p>Turing proved that no program can decide, for every program, whether it will eventually stop running<span class="cites">[<a class="cite" href="#ref-turing36" title="A. M. Turing (1936). On computable numbers, with an application to the Entscheidungsproblem. Proceedings of the London Mathematical Society s2-42.">7</a>]</span>. This is the <dfn>halting problem</dfn>. It is easy to confuse two kinds of stopping. Prefix-freeness tells the machine where a program’s <em>text</em> ends. Nothing can tell it whether <em>running</em> the program ends. That second kind is why <i>K</i> cannot be computed: some short program might still be running, and print <i>x</i> tomorrow<span class="cites">[<a class="cite" href="#ref-livitanyi" title="M. Li and P. Vitányi (2019). An Introduction to Kolmogorov Complexity and Its Applications, 4th ed. Springer.">10</a>]</span>.</p>
+    <p>Chaitin’s <dfn>Ω</dfn> (omega) is the probability that a program made of fair coin flips eventually halts<span class="cites">[<a class="cite" href="#ref-chaitin75" title="G. J. Chaitin (1975). A theory of program size formally identical to information theory. Journal of the ACM 22(3).">13</a>]</span>. Programs that never halt contribute nothing to it. Ω is random in Martin-Löf’s sense, yet its first <i>n</i> bits would settle the halting problem for every program up to <i>n</i> bits long<span class="cites">[<a class="cite" href="#ref-chaitin75" title="G. J. Chaitin (1975). A theory of program size formally identical to information theory. Journal of the ACM 22(3).">13</a>, <a class="cite" href="#ref-livitanyi" title="M. Li and P. Vitányi (2019). An Introduction to Kolmogorov Complexity and Its Applications, 4th ed. Springer.">10</a>]</span>. Chaitin also proved that a formal proof system can certify strings as random only up to a complexity set by its own size, so almost no specific long string can be proved random.</p>
+    <div class="aside"><h4>Randomness depends on who is looking</h4>
+      <p>Each definition above has the form “no observer of a certain power can find a pattern”. Change the observer and the answer changes.</p>
+      <ul class="tight">
+        <li><b>Observers limited to efficient computation</b> (polynomial time, the standard model of “feasible”): short programs can produce output that looks random to them. This is <dfn>pseudorandomness</dfn>, and modern cryptography depends on it<span class="cites">[<a class="cite" href="#ref-hill99" title="J. Håstad, R. Impagliazzo, L. A. Levin and M. Luby (1999). A pseudorandom generator from any one-way function. SIAM Journal on Computing 28(4).">15</a>]</span>.</li>
+        <li><b>Observers that can run any computation:</b> Martin-Löf randomness.</li>
+        <li><b>Observers that can also solve the halting problem:</b> a stricter notion called 2-randomness. Ω is not random to them, because they can compute it.</li>
+      </ul>
+    </div>
+    <p class="bridge">We can now say what a pattern is. What would a learner that finds every pattern look like?</p>
+  </div>
+</section>
+<section class="ch" id="c3" data-code="0011">
+  <div class="ch-head"><div class="cell"></div><h2>The perfect learner (who can’t exist)</h2></div>
+  <div class="col">
+    <p class="lede">The boxes at the top were this same game, made obvious. Here the list is 0s and 1s, arriving one at a time, and before each one you say how likely a 1 is. Assume only that some program, any program, is producing the list.</p>
+    <p>Solomonoff’s player has three ingredients<span class="cites">[<a class="cite" href="#ref-solomonoff64" title="R. J. Solomonoff (1964). A formal theory of inductive inference, parts I and II. Information and Control 7.">3</a>, <a class="cite" href="#ref-hutter05" title="M. Hutter (2005). Universal Artificial Intelligence: Sequential Decisions Based on Algorithmic Probability. Springer.">5</a>]</span>.</p>
+    <ul class="tight">
+      <li><b>Every program is a hypothesis:</b> “maybe this program is what is producing the data”.</li>
+      <li><b>The prior is coin flips.</b> Each program starts with weight 2<sup>−|p|</sup>, the chance of typing it with fair coin flips from chapter 0010. Every program bit is treated as equally likely to be 0 or 1, and short programs end up favoured simply because they need fewer lucky flips. <dfn>Occam’s razor</dfn>, the preference for simpler explanations, comes out of complete ignorance about program bits instead of being assumed<span class="cites">[<a class="cite" href="#ref-livitanyi" title="M. Li and P. Vitányi (2019). An Introduction to Kolmogorov Complexity and Its Applications, 4th ed. Springer.">10</a>]</span>.</li>
+      <li><b>Predict by vote, then check.</b> Call a program <dfn>consistent</dfn> if its output so far matches the data. Predict the next bit by the weighted vote of the consistent programs. Then observe the true bit and discard every program that got it wrong.</li>
+    </ul>
+    <h3>Where K comes in</h3>
+    <p>Several programs can print the same thing. Grouping them changes no prediction, but it shows where Kolmogorov complexity enters. The player never computes <i>K</i>; it only uses 2<sup>−|p|</sup>. <i>K</i> appears in the analysis: the total prior of everything that prints one output is roughly 2<sup>−K</sup>, because the shortest program contributes the most. This is Levin’s coding theorem<span class="cites">[<a class="cite" href="#ref-zvonkin70" title="A. K. Zvonkin and L. A. Levin (1970). The complexity of finite objects and the development of the concepts of information and randomness by means of the theory of algorithms. Russian Mathematical Surveys 25(6).">16</a>, <a class="cite" href="#ref-livitanyi" title="M. Li and P. Vitányi (2019). An Introduction to Kolmogorov Complexity and Its Applications, 4th ed. Springer.">10</a>]</span>.</p>
+    <h3>Why it always works</h3>
+    <p>Write <i>M</i>(<i>x</i>) for the total weight of the programs consistent with data <i>x</i>, and μ (the Greek letter mu) for the true process producing the data. Two facts finish the argument<span class="cites">[<a class="cite" href="#ref-solomonoff78" title="R. J. Solomonoff (1978). Complexity-based induction systems: comparisons and convergence theorems. IEEE Transactions on Information Theory 24(4).">4</a>, <a class="cite" href="#ref-hutter05" title="M. Hutter (2005). Universal Artificial Intelligence: Sequential Decisions Based on Algorithmic Probability. Springer.">5</a>]</span>.</p>
+    <ul class="tight">
+      <li><b>Total surprise is −log₂ <i>M</i>(<i>x</i>).</b> The probabilities you gave at each step multiply together, so their surprises add up to exactly this.</li>
+      <li><b>The truth is never discarded.</b> The shortest program for μ always prints the right bits, so the surviving weight never falls below 2<sup>−K(μ)</sup>.</li>
+    </ul>
+    <div class="eq">total surprise, forever ≤ <b>K(μ)</b> bits</div>
+    <p>If the truth is itself random, say a biased coin, the same argument bounds your <em>extra</em> surprise beyond the coin’s own, and your probabilities converge to the true ones<span class="cites">[<a class="cite" href="#ref-solomonoff78" title="R. J. Solomonoff (1978). Complexity-based induction systems: comparisons and convergence theorems. IEEE Transactions on Information Theory 24(4).">4</a>, <a class="cite" href="#ref-hutter05" title="M. Hutter (2005). Universal Artificial Intelligence: Sequential Decisions Based on Algorithmic Probability. Springer.">5</a>]</span>. For random hypotheses “discard” becomes “multiply by the probability it gave to what happened”. That is Bayes’ rule, with discarding as the special case where that probability is zero.</p>
+    <details class="aside fold"><summary><h4>What “converges” really means</h4><span class="fold-hint">expand</span></summary>
+      <ul class="tight">
+        <li>It converges in <em>prediction</em>, not identification: hypotheses that agree with the truth on everything seen so far keep their weight<span class="cites">[<a class="cite" href="#ref-hutter05" title="M. Hutter (2005). Universal Artificial Intelligence: Sequential Decisions Based on Algorithmic Probability. Springer.">5</a>]</span>.</li>
+        <li>It holds along the sequence you actually see, not for histories that never happened<span class="cites">[<a class="cite" href="#ref-hutter05" title="M. Hutter (2005). Universal Artificial Intelligence: Sequential Decisions Based on Algorithmic Probability. Springer.">5</a>]</span>.</li>
+        <li>It holds with probability 1, which is not the same as “on every random sequence”: Hutter and Muchnik found Martin-Löf random sequences on which it fails<span class="cites">[<a class="cite" href="#ref-huttermuchnik07" title="M. Hutter and A. Muchnik (2007). On semimeasures predicting Martin-Löf random sequences. Theoretical Computer Science 382(3).">17</a>]</span>.</li>
+        <li>You never know when it has converged, because <i>K</i>(μ) cannot be computed<span class="cites">[<a class="cite" href="#ref-livitanyi" title="M. Li and P. Vitányi (2019). An Introduction to Kolmogorov Complexity and Its Applications, 4th ed. Springer.">10</a>]</span>.</li>
+      </ul>
+    </details>
+    <h3>Why this prior and not another</h3>
+    <p>Take any prior <i>w′</i> that a computer can calculate. Solomonoff’s prior gives every hypothesis at least 2<sup>−K(w′)</sup> times the weight <i>w′</i> gives it, because it can always simulate <i>w′</i> after spending <i>K</i>(<i>w′</i>) bits to describe it<span class="cites">[<a class="cite" href="#ref-livitanyi" title="M. Li and P. Vitányi (2019). An Introduction to Kolmogorov Complexity and Its Applications, 4th ed. Springer.">10</a>, <a class="cite" href="#ref-hutter05" title="M. Hutter (2005). Universal Artificial Intelligence: Sequential Decisions Based on Algorithmic Probability. Springer.">5</a>]</span>. So it is never more than a fixed number of bits worse than any computable prior, and it never gives a computable truth zero weight. That last property is Cromwell’s rule: nothing that could be true should start out impossible.</p>
+    <p>With a different prior, Bayes still converges, but your mistakes are bounded by −log₂ <i>w′</i>(μ) instead of <i>K</i>(μ)<span class="cites">[<a class="cite" href="#ref-hutter05" title="M. Hutter (2005). Universal Artificial Intelligence: Sequential Decisions Based on Algorithmic Probability. Springer.">5</a>]</span>. The prior decides how fast, not where, unless it gives the truth zero weight; then you never arrive. With uncountably many hypotheses even a positive prior can fail, one more reason countably many programs are convenient.</p>
+    <p class="bridge">The player keeps updating as bits arrive. What exactly is it keeping track of?</p>
+  </div>
+</section>
+<section class="ch" id="c4" data-code="0100">
+  <div class="ch-head"><div class="cell"></div><h2>Updating is keeping score</h2></div>
+  <div class="col">
+    <p class="lede">The prior never changes. What changes, as data arrives, is a running score measured in bits.</p>
+    <p>Each hypothesis starts with a score equal to its description length. Every observed bit adds its <dfn>surprise</dfn>, −log₂ of the probability the hypothesis gave to what actually happened (chapter 0001). Weight is 2 to the power of minus the score, so a lower score is better. Writing ν (nu) for a hypothesis and x<sub>&lt;t</sub> for the bits before step <i>t</i>:</p>
+    <div class="eq">score(ν) = K(ν) + Σ<sub>t</sub> −log₂ ν(x<sub>t</sub> | x<sub>&lt;t</sub>) &nbsp;·&nbsp; weight ∝ 2<sup>−score</sup></div>
+    <p>The score is a <dfn>two-part code length</dfn>: bits to describe the hypothesis, plus bits to describe the data using it<span class="cites">[<a class="cite" href="#ref-rissanen78" title="J. Rissanen (1978). Modeling by shortest data description. Automatica 14(5).">18</a>, <a class="cite" href="#ref-grunwald07" title="P. D. Grünwald (2007). The Minimum Description Length Principle. MIT Press.">19</a>]</span>. The current leader is therefore always the hypothesis that minimum description length (MDL) would choose. Solomonoff’s player does not pick it, though; it keeps averaging. In the language of online learning, this update is the exponential-weights algorithm run on log-loss.</p>
+    <h3>Always the true bits, never your own guesses</h3>
+    <p>Learning only happens because the world supplies the next bit. If you appended your own prediction instead, no evidence would come in; you would just grow more confident in what you already believed. That is generating, not learning.</p>
+    <p>Neural networks show the same split. A <dfn>neural network</dfn> is a large adjustable function whose numerical settings, called <dfn>weights</dfn>, are tuned to reduce prediction error. When a language model is trained, every position predicts the next word piece (a <dfn>token</dfn>) from the <em>true</em> previous tokens, a method called <dfn>teacher forcing</dfn><span class="cites">[<a class="cite" href="#ref-williamszipser89" title="R. J. Williams and D. Zipser (1989). A learning algorithm for continually running fully recurrent neural networks. Neural Computation 1(2).">20</a>]</span>. When it later writes text, it is fed its own outputs, and the mismatch between the two regimes is called exposure bias. Training also differs from Bayes in one important way: Bayes reweights a fixed set of hypotheses, while training a network moves a single hypothesis, its weights, step by step<span class="cites">[<a class="cite" href="#ref-rumelhart86" title="D. E. Rumelhart, G. E. Hinton and R. J. Williams (1986). Learning representations by back-propagating errors. Nature 323.">21</a>]</span>.</p>
+    <p class="bridge">A score in bits is a code length. Is predicting just compressing, then?</p>
+  </div>
+</section>
+<section class="ch" id="c5" data-code="0101">
+  <div class="ch-head"><div class="cell"></div><h2>Compression is prediction</h2></div>
+  <div class="col">
+    <p class="lede">Picture Alice sending data to Bob. She does not send a model. Both start with the same learning procedure, and she encodes each point using the model trained on the points before it.</p>
+    <p>This is the <dfn>prequential code</dfn><span class="cites">[<a class="cite" href="#ref-dawid84" title="A. P. Dawid (1984). Present position and potential developments: some personal views. Statistical theory: the prequential approach. Journal of the Royal Statistical Society A 147(2).">22</a>]</span>. Its length is the total surprise on points the model has not yet seen, so memorising the data earns nothing. Where does the cost of describing the model go? Into the early mistakes, made while the model is still learning<span class="cites">[<a class="cite" href="#ref-grunwald07" title="P. D. Grünwald (2007). The Minimum Description Length Principle. MIT Press.">19</a>]</span>.</p>
+  </div>
+  <div class="bench-wrap"><div class="bench">
+    <div class="bench-title"><strong>Where the model cost hides</strong><span>INSTRUMENT · expected code length per flip</span></div>
+    <div class="grid2" style="align-items:end">
+      <label class="small" for="theta">Coin bias θ: <span class="readout" id="thetaV"></span><br><input type="range" id="theta" min="0.5" max="0.99" step="0.01" value="0.9" style="width:100%"></label>
+      <label class="small" for="nflip">Number of flips n: <span class="readout" id="nV"></span><br><input type="range" id="nflip" min="50" max="600" step="50" value="300" style="width:100%"></label>
+    </div>
+    <div style="overflow-x:auto"><svg id="preq" viewBox="0 0 640 290" style="width:100%; min-width:420px; height:auto; display:block" role="img" aria-label="Line chart: per-flip code length of the learning model falling toward the entropy line"></svg></div>
+    <p class="small" style="margin:.3rem 0 .6rem"><span class="b1">━</span> learning θ as it goes (Laplace’s rule of succession) &nbsp; <span class="b0">┅</span> knowing θ in advance (entropy) &nbsp; shaded: the extra bits</p>
+    <div class="totals">
+      <div><div class="big" id="pArea"></div><div class="lbl">SHADED AREA, BITS</div></div>
+      <div><div class="big" id="pHalf"></div><div class="lbl">½ log₂ n: TWO-PART MDL PRICE</div></div>
+      <div><div class="big" id="pTot"></div><div class="lbl">TOTAL CODE, BITS</div></div>
+    </div>
+  </div></div>
+  <div class="col">
+    <p>The shaded area is the cost of the model, and it tracks ½ log₂ <i>n</i>: the price that two-part MDL charges for stating one parameter to the precision that <i>n</i> data points justify<span class="cites">[<a class="cite" href="#ref-rissanen78" title="J. Rissanen (1978). Modeling by shortest data description. Automatica 14(5).">18</a>, <a class="cite" href="#ref-grunwald07" title="P. D. Grünwald (2007). The Minimum Description Length Principle. MIT Press.">19</a>]</span>. The same penalty appears in the Bayesian information criterion, BIC. Two-part coding pays for the model up front; prequential coding pays in instalments.</p>
+    <details class="aside fold"><summary><h4>A family of universal codes</h4><span class="fold-hint">expand</span></summary>
+      <p>Refined MDL asks for one code for a whole hypothesis class that is never much worse than the best member chosen in hindsight<span class="cites">[<a class="cite" href="#ref-grunwald07" title="P. D. Grünwald (2007). The Minimum Description Length Principle. MIT Press.">19</a>]</span>. Normalised maximum likelihood (NML) achieves this optimally. Its penalty measures how many different datasets the class can fit well, which depends on more than the number of parameters: it grows like (k/2) log <i>n</i> for <i>k</i> parameters plus a term that reflects the shape of the class. A Bayesian mixture, a prequential code and a carefully built two-part code all match NML for large <i>n</i>, and a prequential code that uses Bayesian predictions is exactly the Bayesian marginal likelihood<span class="cites">[<a class="cite" href="#ref-grunwald07" title="P. D. Grünwald (2007). The Minimum Description Length Principle. MIT Press.">19</a>]</span>.</p>
+    </details>
+    <h3>Deep learning is quietly prequential</h3>
+    <p>When a network is trained in a single pass over its data, each batch is scored before the network learns from it. The summed training loss is then a prequential code for the dataset, and Bob could rerun the same training, so the weights never need to be sent<span class="cites">[<a class="cite" href="#ref-blier18" title="L. Blier and Y. Ollivier (2018). The description length of deep learning models. NeurIPS.">23</a>]</span>. Measured this way, deep networks are strong compressors, and large language models compress even images and audio well<span class="cites">[<a class="cite" href="#ref-blier18" title="L. Blier and Y. Ollivier (2018). The description length of deep learning models. NeurIPS.">23</a>, <a class="cite" href="#ref-deletang24" title="G. Delétang et al. (2024). Language modeling is compression. ICLR.">24</a>]</span>. In our reading, a second pass over the same data breaks the code, because by then the model has already seen what it is predicting.</p>
+    <h3>Epiplexity: the area, for a learner with a budget</h3>
+    <p>Finzi and colleagues fix a <dfn>compute budget</dfn> <i>T</i>, a limit on how much computation the learner may spend, and take the model <i>P*</i> that gives the shortest total description of the data while running within that budget<span class="cites">[<a class="cite" href="#ref-finzi26" title="M. Finzi et al. (2026). From entropy to epiplexity: rethinking information for computationally bounded intelligence. arXiv:2601.03220.">25</a>]</span>. They split the total into two parts:</p>
+    <div class="eq">S<sub>T</sub> = |P*| (structure, “epiplexity”) &nbsp;·&nbsp; H<sub>T</sub> = expected −log P*(X) (time-bounded entropy)</div>
+    <p>Their quick estimate of S<sub>T</sub> is the area under a training curve above its final level, the same area as in the chart above<span class="cites">[<a class="cite" href="#ref-finzi26" title="M. Finzi et al. (2026). From entropy to epiplexity: rethinking information for computationally bounded intelligence. arXiv:2601.03220.">25</a>]</span>. A pseudorandom tape from chapter 0010 gives a flat curve and no area: to a learner with a budget it is pure entropy, even though a tiny program wrote it<span class="cites">[<a class="cite" href="#ref-finzi26" title="M. Finzi et al. (2026). From entropy to epiplexity: rethinking information for computationally bounded intelligence. arXiv:2601.03220.">25</a>]</span>.</p>
+    <h3>Why trust compression?</h3>
+    <ul class="tight">
+      <li><b>It rarely happens by luck.</b> The probability that any code beats the true source by <i>k</i> bits is at most 2<sup>−k</sup><span class="cites">[<a class="cite" href="#ref-grunwald07" title="P. D. Grünwald (2007). The Minimum Description Length Principle. MIT Press.">19</a>]</span>. Compression is evidence of real structure.</li>
+      <li><b>Short descriptions generalise, by counting.</b> If a hypothesis that takes <i>L</i> bits to describe fits <i>m</i> examples, then with probability 1 − δ its true error is at most (<i>L</i> ln 2 + ln 1/δ)/<i>m</i><span class="cites">[<a class="cite" href="#ref-blumer87" title="A. Blumer, A. Ehrenfeucht, D. Haussler and M. K. Warmuth (1987). Occam’s razor. Information Processing Letters 24(6).">26</a>]</span>. There are only 2<sup>L</sup> such hypotheses, so a good fit is unlikely to be a coincidence. No assumption that the world is simple is needed.</li>
+      <li><b>The caveats.</b> The description language is a choice. When no hypothesis in the class is close to the truth, Bayes and MDL can behave badly. And total code length is not the same as useful structure: most of a photograph’s bits are noise.</li>
+    </ul>
+    <p class="bridge">Everything so far quietly ignored one cost. What happens when time is not free?</p>
+  </div>
+</section>
+<section class="ch" id="c6" data-code="0110">
+  <div class="ch-head"><div class="cell"></div><h2>Time sends the bill</h2></div>
+  <div class="col">
+    <p class="lede">Solomonoff weights a program by its length only. A program that needs 10<sup>100</sup> steps per bit counts the same as one that answers instantly<span class="cites">[<a class="cite" href="#ref-hutter05" title="M. Hutter (2005). Universal Artificial Intelligence: Sequential Decisions Based on Algorithmic Probability. Springer.">5</a>]</span>.</p>
+    <p>Levin also charged for time<span class="cites">[<a class="cite" href="#ref-levin73" title="L. A. Levin (1973). Universal sequential search problems. Problems of Information Transmission 9(3).">27</a>, <a class="cite" href="#ref-livitanyi" title="M. Li and P. Vitányi (2019). An Introduction to Kolmogorov Complexity and Its Applications, 4th ed. Springer.">10</a>]</span>. Writing <i>t</i>(<i>p</i>) for the number of steps program <i>p</i> runs:</p>
+    <div class="eq">Kt(x) = min<sub>p</sub> [ |p| + log₂ t(p) ]</div>
+    <p>One extra bit of program costs the same as doubling the running time. <dfn>Levin search</dfn> turns this into a procedure for any problem whose answers can be checked: run all programs in parallel, giving each a share 2<sup>−|p|</sup> of the total computing time<span class="cites">[<a class="cite" href="#ref-levin73" title="L. A. Levin (1973). Universal sequential search problems. Problems of Information Transmission 9(3).">27</a>]</span>. If some program <i>p*</i> solves the problem in time <i>t</i>(<i>p*</i>), Levin search finds a solution in about 2<sup>|p*|</sup>·<i>t</i>(<i>p*</i>) steps, optimal up to a constant factor that can be astronomically large<span class="cites">[<a class="cite" href="#ref-levin73" title="L. A. Levin (1973). Universal sequential search problems. Problems of Information Transmission 9(3).">27</a>, <a class="cite" href="#ref-livitanyi" title="M. Li and P. Vitányi (2019). An Introduction to Kolmogorov Complexity and Its Applications, 4th ed. Springer.">10</a>]</span>. Unlike <i>K</i>, <i>Kt</i> can be computed<span class="cites">[<a class="cite" href="#ref-livitanyi" title="M. Li and P. Vitányi (2019). An Introduction to Kolmogorov Complexity and Its Applications, 4th ed. Springer.">10</a>]</span>. Schmidhuber’s <dfn>speed prior</dfn> weights programs roughly by 2<sup>−|p|</sup> divided by their running time<span class="cites">[<a class="cite" href="#ref-schmidhuber02" title="J. Schmidhuber (2002). The speed prior: a new simplicity measure yielding near-optimal computable predictions. Proceedings of COLT.">28</a>]</span>. Bennett’s <dfn>logical depth</dfn> is the running time of a near-shortest program: random strings and trivial strings are shallow, while objects that unfold slowly from short rules are deep<span class="cites">[<a class="cite" href="#ref-bennett88" title="C. H. Bennett (1988). Logical depth and physical complexity. In The Universal Turing Machine: A Half-Century Survey, Oxford University Press.">29</a>]</span>.</p>
+    <p>Once time is counted, information depends on the observer. The same tape can be structure to one learner and noise to another<span class="cites">[<a class="cite" href="#ref-finzi26" title="M. Finzi et al. (2026). From entropy to epiplexity: rethinking information for computationally bounded intelligence. arXiv:2601.03220.">25</a>]</span>.</p>
+  </div>
+  <div class="bench-wrap"><div class="bench">
+    <div class="bench-title"><strong>Give the observer more compute</strong><span>INSTRUMENT · rule 30, one column at a time</span></div>
+    <p class="small">The magenta column is the Rule 30 tape from chapter 0010, with time running downward. Its bits pass standard statistical tests for randomness<span class="cites">[<a class="cite" href="#ref-wolfram02" title="S. Wolfram (2002). A New Kind of Science. Wolfram Media.">11</a>]</span>, so an observer who only sees that column must treat it as noise. Widen what the observer can compute, and the column turns out to be the edge of a structure that was there all along.</p>
+    <canvas id="lens" aria-label="Rule 30 spacetime diagram revealed through an adjustable window around the centre column"></canvas>
+    <div class="grid2" style="align-items:center; margin-top:.8rem">
+      <label class="small" for="lensK">Cells the observer can compute per step: <span class="readout" id="lensV"></span><br><input type="range" id="lensK" min="0" max="140" step="1" value="18" style="width:100%"></label>
+      <div class="keys" style="justify-content:flex-end"><button class="key" id="lensRun" type="button">Run the rule</button><button class="key ghost" id="lensZero" type="button">Column only</button></div>
+    </div>
+    <p class="readout" id="lensRead"></p>
+  </div></div>
+  <div class="col">
+    <p class="bridge">If time is not free, how should a learner look for good programs at all?</p>
+  </div>
+</section>
+<section class="ch" id="c7" data-code="0111">
+  <div class="ch-head"><div class="cell"></div><h2>Finding explanations is the hard part</h2></div>
+  <div class="col">
+    <p class="lede">Solomonoff’s player only <em>selects</em>. Every candidate program already sits in its pool, for free. Real learners have to produce candidates, and the history of learning can be read as a history of producing them more cleverly.</p>
+  </div>
+  <div class="bench-wrap"><div class="bench">
+    <div class="bench-title"><strong>Three ways to look for a good program</strong><span>INSTRUMENT · one landscape, three searchers</span></div>
+    <p class="small">Darker means lower loss. A narrow deep well hides at one spot, a broad shallow one at another. Watch how each candidate generator spends its evaluations.</p>
+    <canvas id="land" aria-label="Animated loss landscape with three search strategies: random sampling, an evolving population, and gradient descent"></canvas>
+    <div class="legend3">
+      <div class="l-r"><h4>Enumerate / sample</h4><div class="readout" id="lgR"></div></div>
+      <div class="l-e"><h4>Vary and select</h4><div class="readout" id="lgE"></div></div>
+      <div class="l-g"><h4>Follow the gradient</h4><div class="readout" id="lgG"></div></div>
+    </div>
+    <div class="keys"><button class="key ghost" id="landReset" type="button">New run</button></div>
+  </div></div>
+  <div class="col">
+    <p>The three searchers on the landscape correspond to three stages in the history below. Each stage is labelled by whether its effort goes mainly into choosing among candidates or into constructing them.</p>
+    <p class="small"><span class="gen sel">selection-heavy</span> &nbsp; <span class="gen con">construction-heavy</span></p>
+    <div class="ladder">
+      <div class="rung"><div class="when">1960s–70s<b>Enumerate everything</b></div><div class="what"><p>Solomonoff, Kolmogorov, Chaitin, Levin<span class="cites">[<a class="cite" href="#ref-solomonoff64" title="R. J. Solomonoff (1964). A formal theory of inductive inference, parts I and II. Information and Control 7.">3</a>, <a class="cite" href="#ref-kolmogorov65" title="A. N. Kolmogorov (1965). Three approaches to the quantitative definition of information. Problems of Information Transmission 1; English version in International Journal of Computer Mathematics 2 (1968).">8</a>, <a class="cite" href="#ref-chaitin66" title="G. J. Chaitin (1966). On the length of programs for computing finite binary sequences. Journal of the ACM 13(4).">9</a>, <a class="cite" href="#ref-levin73" title="L. A. Levin (1973). Universal sequential search problems. Problems of Information Transmission 9(3).">27</a>]</span>. <span class="gen sel">selection</span></p><dl><dt>CANDIDATES</dt><dd>All programs</dd><dt>SELECTED BY</dt><dd>Fit plus length</dd><dt>COST</dt><dd>Uncomputable, or exponential in program length</dd></dl></div></div>
+      <div class="rung"><div class="when">1970s–80s<b>Restrict the class</b></div><div class="what"><p>Information criteria, MDL<span class="cites">[<a class="cite" href="#ref-rissanen78" title="J. Rissanen (1978). Modeling by shortest data description. Automatica 14(5).">18</a>]</span>, capacity bounds and PAC learning, which made efficient computation part of what “learnable” means<span class="cites">[<a class="cite" href="#ref-valiant84" title="L. G. Valiant (1984). A theory of the learnable. Communications of the ACM 27(11).">30</a>]</span>. <span class="gen sel">selection</span></p><dl><dt>CANDIDATES</dt><dd>A small class chosen by a person</dd><dt>SELECTED BY</dt><dd>Fit with a penalty for complexity</dd><dt>COST</dt><dd>Cheap, but only as good as the class</dd></dl></div></div>
+      <div class="rung"><div class="when">Always<b>Vary what works</b></div><div class="what"><p>Natural selection<span class="cites">[<a class="cite" href="#ref-darwin1859" title="C. Darwin (1859). On the Origin of Species. John Murray.">31</a>]</span>, genetic algorithms, evolved neural networks. <span class="gen sel">selection</span> <span class="gen con">construction</span></p><dl><dt>CANDIDATES</dt><dd>Mutations and recombinations of survivors</dd><dt>SELECTED BY</dt><dd>Fitness</dd><dt>COST</dt><dd>Many trials, but it works where no gradient exists and can change the machine itself</dd></dl></div></div>
+      <div class="rung"><div class="when">1970 →<b>Follow the gradient</b></div><div class="what"><p>Backpropagation computes, in one backward pass, which direction to nudge every weight<span class="cites">[<a class="cite" href="#ref-rumelhart86" title="D. E. Rumelhart, G. E. Hinton and R. J. Williams (1986). Learning representations by back-propagating errors. Nature 323.">21</a>]</span>. <span class="gen con">construction</span></p><dl><dt>CANDIDATES</dt><dd>Small improvements to the current weights</dd><dt>SELECTED BY</dt><dd>The gradient of the error</dd><dt>COST</dt><dd>One backward pass compares every nearby candidate at once</dd></dl></div></div>
+      <div class="rung"><div class="when">2012 →<b>Scale it</b></div><div class="what"><p>GPUs, large datasets, convolutional and attention-based networks<span class="cites">[<a class="cite" href="#ref-vaswani17" title="A. Vaswani et al. (2017). Attention is all you need. NeurIPS.">32</a>]</span>. Networks can memorise random labels, so classical capacity bounds cannot explain why they generalise<span class="cites">[<a class="cite" href="#ref-zhang17" title="C. Zhang, S. Bengio, M. Hardt, B. Recht and O. Vinyals (2017). Understanding deep learning requires rethinking generalization. ICLR.">33</a>]</span>; compression-based bounds do better, and flat minima need fewer bits to describe. <span class="gen con">construction</span></p><dl><dt>CANDIDATES</dt><dd>Very large networks</dd><dt>SELECTED BY</dt><dd>Next-token surprise, which is code length</dd><dt>COST</dt><dd>Vast compute; scaling laws describe the return</dd></dl></div></div>
+      <div class="rung"><div class="when">2018 →<b>Learn the generator</b></div><div class="what"><p>Libraries of reusable program parts. Pretrained models that learn from examples placed in their input, which behaves like approximate Bayesian inference<span class="cites">[<a class="cite" href="#ref-xie22" title="S. M. Xie, A. Raghunathan, P. Liang and T. Ma (2022). An explanation of in-context learning as implicit Bayesian inference. ICLR.">34</a>]</span>. Networks trained on the outputs of universal machines, to approximate Solomonoff’s player directly. <span class="gen con">construction</span></p><dl><dt>CANDIDATES</dt><dd>Proposed by a learned model</dd><dt>SELECTED BY</dt><dd>Implicitly, inside the model</dd><dt>COST</dt><dd>Search paid once in training; one forward pass per new problem</dd></dl></div></div>
+      <div class="rung"><div class="when">2016 →<b>Propose, then search</b></div><div class="what"><p>Game-tree search guided by a learned policy, step-by-step reasoning in language models, program search with language models as proposers, formal proof search. <span class="gen sel">selection</span> <span class="gen con">construction</span></p><dl><dt>CANDIDATES</dt><dd>Sampled from a learned prior</dd><dt>SELECTED BY</dt><dd>A verifier, a reward or a value estimate</dd><dt>COST</dt><dd>In our reading, Levin search with a learned prior in place of 2<sup>−|p|</sup></dd></dl></div></div>
+    </div>
+    <p>Read top to bottom, the field moves from selecting to constructing, then starts selecting again among candidates a learned model proposes. Sutton’s “bitter lesson” is that general methods which use more computation, search and learning, have repeatedly beaten hand-built knowledge.</p>
+    <p class="bridge">A learned model that proposes programs is itself a kind of machine. Whose program is it?</p>
+  </div>
+</section>
+<section class="ch" id="c8" data-code="1000">
+  <div class="ch-head"><div class="cell"></div><h2>Programs that become machines</h2></div>
+  <div class="col">
+    <p class="lede">“Machine” and “program” are roles, not kinds of thing. A Python interpreter is a program to the processor running it and a machine to the Python code it runs.</p>
+    <p>Every learning system in this page is a stack of loops. In each loop a <b>machine</b> runs, a <b>program</b> is found, and that program becomes the machine for the loop inside it. The pairings below are our reading; the cited works describe the individual loops.</p>
+  </div>
+  <div class="bench-wrap"><div class="bench">
+    <div class="bench-title"><strong>Nested loops</strong><span>INSTRUMENT · nature and silicon</span></div>
+    <div class="keys" role="group" aria-label="Choose which stack to show">
+      <button class="key" id="ringNature" type="button" aria-pressed="true">Nature</button>
+      <button class="key" id="ringSilicon" type="button" aria-pressed="false">Silicon</button>
+    </div>
+    <div class="rings">
+      <svg id="ringsvg" viewBox="0 0 360 360" role="img" aria-label="Four concentric rings, outermost loop to innermost"></svg>
+      <div class="tbl-wrap" style="margin:0"><table>
+        <thead><tr><th>Loop</th><th>Nature: machine → program</th><th>Silicon: machine → program</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">1 · outer</td><td>Chemistry + selection → <b>genome</b></td><td>Hardware + architecture search → <b>architecture</b></td></tr>
+          <tr><td class="mono">2</td><td>Genome + development → <b>brain wiring, priors</b></td><td>Architecture + pretraining → <b>weights</b></td></tr>
+          <tr><td class="mono">3</td><td>Brain + plasticity → <b>skills, memories</b></td><td>Trained model + prompt → <b>in-context “program”</b></td></tr>
+          <tr><td class="mono">4 · inner</td><td>Mind → <b>a train of thought</b></td><td>Model + sampler → <b>chain of thought</b></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div></div>
+  <div class="col">
+    <p>In silicon, training searches for a program, the weights, and the program it finds then acts as a machine. After pretraining you stop changing the weights and give the model prompts, which it treats as evidence about what is generating the text<span class="cites">[<a class="cite" href="#ref-xie22" title="S. M. Xie, A. Raghunathan, P. Liang and T. Ma (2022). An explanation of in-context learning as implicit Bayesian inference. ICLR.">34</a>]</span>. Networks trained on universal-machine outputs make this explicit. It is a bounded stand-in for a universal machine: a fixed amount of computation per token and a finite input window, with step-by-step reasoning adding running time and, in principle, much more expressive power.</p>
+    <div class="aside"><h4>The genomic bottleneck</h4><p>The human genome holds well under a gigabyte of information, while the brain has around 10<sup>14</sup> synapses<span class="cites">[<a class="cite" href="#ref-zador19" title="A. M. Zador (2019). A critique of pure learning and what artificial neural networks can learn from animal brains. Nature Communications 10.">35</a>]</span>. Evolution cannot specify that wiring directly, so it has to encode a learner: compact priors and learning rules that grow into a capable brain<span class="cites">[<a class="cite" href="#ref-zador19" title="A. M. Zador (2019). A critique of pure learning and what artificial neural networks can learn from animal brains. Nature Communications 10.">35</a>]</span>. Evolution compresses learners rather than solutions.</p></div>
+    <p class="bridge">That completes the machinery. Now the questions can be asked properly.</p>
+  </div>
+</section>
+<section id="questions" class="qsec">
+  <div class="col">
+    <div class="eyebrow">Part three · the questions</div>
+    <h2 class="part-h">Six questions, sharpened</h2>
+    <p class="lede">You now have the tools. Each card is one of Solomonoff’s assumptions turned into an open question, linked to the chapters it rests on, with what I think we should build.</p>
+  </div>
+  <div class="qgrid">
+    <article class="qcard" id="q1">
+      <canvas class="qca" data-rule="110" data-seed="0" data-tone="zero" aria-hidden="true"></canvas>
+      <div class="qhead"><span class="holes" aria-hidden="true"><i class=""></i><i class=""></i><i class="on"></i></span></div>
+      <h3>Which machine decides what counts as simple?</h3>
+      <p class="why">We will soon say that a pattern is simple if a short program describes it. But “short” depends on the programming language, and there is no obviously correct language. Is there a right one, and could a learner discover it for itself?</p>
+      <p class="build"><span>Build</span> A theory of learned reference machines, so that choosing the training data is choosing the machine.</p>
+      <div class="bgl"><span class="bgl-l">Built in</span> <a class="chip" href="#c0" title="Chapter 0001: Information is a short description" aria-label="Chapter 0001: Information is a short description"><span class="holes" aria-hidden="true"><i></i><i></i><i></i><i class="on"></i></span></a> <a class="chip" href="#c3" title="Chapter 0011: The perfect learner (who can’t exist)" aria-label="Chapter 0011: The perfect learner (who can’t exist)"><span class="holes" aria-hidden="true"><i></i><i></i><i class="on"></i><i class="on"></i></span></a> <a class="chip" href="#c8" title="Chapter 1000: Programs that become machines" aria-label="Chapter 1000: Programs that become machines"><span class="holes" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></span></a></div>
+    </article>
+    <article class="qcard" id="q2">
+      <canvas class="qca" data-rule="30" data-seed="1" data-tone="one" aria-hidden="true"></canvas>
+      <div class="qhead"><span class="holes" aria-hidden="true"><i class=""></i><i class="on"></i><i class=""></i></span></div>
+      <h3>How should a learner come up with candidate explanations?</h3>
+      <p class="why">Testing an explanation against data is one thing; thinking of it in the first place is another. The ideal learner is handed every possible explanation for free. Real learners have to produce their own. What is the best way to do that?</p>
+      <p class="build"><span>Build</span> Learned proposers inside search loops, a learned prior in place of 2<sup>−|p|</sup>, and libraries of parts so each new search is cheaper<span class="cites">[<a class="cite" href="#ref-levin73" title="L. A. Levin (1973). Universal sequential search problems. Problems of Information Transmission 9(3).">27</a>]</span>.</p>
+      <div class="bgl"><span class="bgl-l">Built in</span> <a class="chip" href="#c6" title="Chapter 0110: Time sends the bill" aria-label="Chapter 0110: Time sends the bill"><span class="holes" aria-hidden="true"><i></i><i class="on"></i><i class="on"></i><i></i></span></a> <a class="chip" href="#c7" title="Chapter 0111: Finding explanations is the hard part" aria-label="Chapter 0111: Finding explanations is the hard part"><span class="holes" aria-hidden="true"><i></i><i class="on"></i><i class="on"></i><i class="on"></i></span></a></div>
+    </article>
+    <article class="qcard" id="q3">
+      <canvas class="qca" data-rule="54" data-seed="0" data-tone="ink" aria-hidden="true"></canvas>
+      <div class="qhead"><span class="holes" aria-hidden="true"><i class=""></i><i class="on"></i><i class="on"></i></span></div>
+      <h3>What should simplicity cost?</h3>
+      <p class="why">A short explanation can still take an impossibly long time to work out. Memory and energy are limited too. Should a learner prefer explanations that are short, fast or cheap, and how should those trade off against each other?</p>
+      <p class="build"><span>Build</span> One prior that charges for length, time, memory and energy together; Levin’s Kt and the speed prior are a start<span class="cites">[<a class="cite" href="#ref-levin73" title="L. A. Levin (1973). Universal sequential search problems. Problems of Information Transmission 9(3).">27</a>, <a class="cite" href="#ref-schmidhuber02" title="J. Schmidhuber (2002). The speed prior: a new simplicity measure yielding near-optimal computable predictions. Proceedings of COLT.">28</a>]</span>.</p>
+      <div class="bgl"><span class="bgl-l">Built in</span> <a class="chip" href="#c6" title="Chapter 0110: Time sends the bill" aria-label="Chapter 0110: Time sends the bill"><span class="holes" aria-hidden="true"><i></i><i class="on"></i><i class="on"></i><i></i></span></a></div>
+    </article>
+    <article class="qcard" id="q4">
+      <canvas class="qca" data-rule="90" data-seed="1" data-tone="zero" aria-hidden="true"></canvas>
+      <div class="qhead"><span class="holes" aria-hidden="true"><i class="on"></i><i class=""></i><i class=""></i></span></div>
+      <h3>What can a learner with limited computing promise?</h3>
+      <p class="why">The ideal learner comes with a promise: eventually it predicts as well as the truth allows. But some data looks perfectly random to anyone who cannot compute enough, even though a simple rule produced it. Which promises survive when computing is limited?</p>
+      <p class="build"><span>Build</span> A promise sized to a budget: surprise limited by the structure a learner can actually find, which epiplexity begins to count<span class="cites">[<a class="cite" href="#ref-finzi26" title="M. Finzi et al. (2026). From entropy to epiplexity: rethinking information for computationally bounded intelligence. arXiv:2601.03220.">25</a>]</span>.</p>
+      <div class="bgl"><span class="bgl-l">Built in</span> <a class="chip" href="#c1" title="Chapter 0010: Random means nothing shorter exists" aria-label="Chapter 0010: Random means nothing shorter exists"><span class="holes" aria-hidden="true"><i></i><i></i><i class="on"></i><i></i></span></a> <a class="chip" href="#c3" title="Chapter 0011: The perfect learner (who can’t exist)" aria-label="Chapter 0011: The perfect learner (who can’t exist)"><span class="holes" aria-hidden="true"><i></i><i></i><i class="on"></i><i class="on"></i></span></a> <a class="chip" href="#c5" title="Chapter 0101: Compression is prediction" aria-label="Chapter 0101: Compression is prediction"><span class="holes" aria-hidden="true"><i></i><i class="on"></i><i></i><i class="on"></i></span></a> <a class="chip" href="#c6" title="Chapter 0110: Time sends the bill" aria-label="Chapter 0110: Time sends the bill"><span class="holes" aria-hidden="true"><i></i><i class="on"></i><i class="on"></i><i></i></span></a></div>
+    </article>
+    <article class="qcard" id="q5">
+      <canvas class="qca" data-rule="150" data-seed="1" data-tone="one" aria-hidden="true"></canvas>
+      <div class="qhead"><span class="holes" aria-hidden="true"><i class="on"></i><i class=""></i><i class="on"></i></span></div>
+      <h3>In what order should the world be read?</h3>
+      <p class="why">Data reaches us in a sequence, but its parts do not depend on each other in that sequence: the end of a sentence can shape its beginning. Does the order in which a learner reads the world change what it can learn?</p>
+      <p class="build"><span>Build</span> Prediction over partial orders, with the learner choosing the order that is cheapest to learn from.</p>
+      <div class="bgl"><span class="bgl-l">Built in</span> <a class="chip" href="#c4" title="Chapter 0100: Updating is keeping score" aria-label="Chapter 0100: Updating is keeping score"><span class="holes" aria-hidden="true"><i></i><i class="on"></i><i></i><i></i></span></a> <a class="chip" href="#c5" title="Chapter 0101: Compression is prediction" aria-label="Chapter 0101: Compression is prediction"><span class="holes" aria-hidden="true"><i></i><i class="on"></i><i></i><i class="on"></i></span></a></div>
+    </article>
+    <article class="qcard" id="q6">
+      <canvas class="qca" data-rule="184" data-seed="0" data-tone="ink" aria-hidden="true"></canvas>
+      <div class="qhead"><span class="holes" aria-hidden="true"><i class="on"></i><i class="on"></i><i class=""></i></span></div>
+      <h3>Who chooses the data?</h3>
+      <p class="why">The ideal learner only watches. Real learners act: they decide what to look at, change their surroundings, and share the world with other learners who are changing too. What happens to learning when the learner chooses its own data?</p>
+      <p class="build"><span>Build</span> Learners that choose their own data, in worlds that keep making new problems.</p>
+      <div class="bgl"><span class="bgl-l">Built in</span> <a class="chip" href="#c7" title="Chapter 0111: Finding explanations is the hard part" aria-label="Chapter 0111: Finding explanations is the hard part"><span class="holes" aria-hidden="true"><i></i><i class="on"></i><i class="on"></i><i class="on"></i></span></a> <a class="chip" href="#c8" title="Chapter 1000: Programs that become machines" aria-label="Chapter 1000: Programs that become machines"><span class="holes" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></span></a></div>
+    </article>
+  </div>
+</section>
+<section id="threads" class="qsec">
+  <div class="col">
+    <h3>Four threads to pull</h3>
+    <p><b>Is the world one short program?</b> The idea that the universe is computed goes back at least to Zuse. Even if the laws are short, <em>your</em> data stream also has to say where you are in that universe, and that can cost many bits. Short also does not mean shallow: a short rule run for billions of years can have enormous logical depth<span class="cites">[<a class="cite" href="#ref-bennett88" title="C. H. Bennett (1988). Logical depth and physical complexity. In The Universal Turing Machine: A Half-Century Survey, Oxford University Press.">29</a>]</span>, which an observer with a budget can only experience as complexity.</p>
+    <p><b>Are bits a bias?</b> Not as a unit. With <i>k</i> symbols the prior becomes k<sup>−|p|</sup>, and the invariance theorem absorbs the change<span class="cites">[<a class="cite" href="#ref-livitanyi" title="M. Li and P. Vitányi (2019). An Introduction to Kolmogorov Complexity and Its Applications, 4th ed. Springer.">10</a>]</span>. But discrete descriptions do real work. Networks with exact real-valued weights can compute beyond Turing machines, because one real number can hide unlimited information; add noise and that power disappears. Discreteness keeps information finite. The substantial biases are elsewhere: assuming computability, choosing the reference machine, measuring simplicity by length, and fixing the order.</p>
+    <p><b>Which order?</b> Data arrives in time order, but its dependencies need not follow it: a proof or a planned sentence is shaped by global constraints. Relativity gives no observer-independent order to events that cannot influence each other, so the underlying structure is a partial order. The direction of time we experience is usually traced to a low-entropy past. What we want is prediction over partial orders, with the learner choosing the order that is cheapest to learn from.</p>
+    <p><b>Which machine?</b> Some valid universal machine prints a whole encyclopedia from the empty program, and with such machines the usual optimality results mean little<span class="cites">[<a class="cite" href="#ref-leike15" title="J. Leike and M. Hutter (2015). Bad universal priors and notions of optimality. Proceedings of COLT.">36</a>]</span>. Müller looked for a machine singled out by machines simulating one another and found that none is. Pretraining is already answering the empirical version, implicitly. What we want is a theory of learned reference machines, so that choosing the training data is choosing the machine.</p>
+  </div>
+</section>
+<section id="relativity" class="relsec">
+  <div class="col rel-hero">
+    <div class="eyebrow">Part four · where the thoughts get strange</div>
+    <h2>A relativity<br><span class="one">of learning</span></h2>
+    <p class="lede">Everything above quietly assumed one learner, standing outside one world, reading it in one order. Drop that assumption and almost every quantity in this blog starts to depend on who is looking. What follows are my conjectures, not results. Each one is where I think one of the six questions leads, and each carries the same code as its question.</p>
+  </div>
+  <div class="col posts">
+    <article class="post">
+      <div class="pcode"><span class="holes" aria-hidden="true"><i></i><i></i><i class="on"></i></span><span class="plab">CONJECTURE</span></div>
+      <div class="pbody">
+        <h3>There are no machines and no programs, only roles.</h3>
+        <p>Every learner is a program to the loop outside it and a machine to the loop inside it. A machine does not optimise itself; the loop around it does. What a machine inside a world has to do, to act well, is carry a compressed model of that world. Cybernetics proved a version of this half a century ago: every good regulator of a system must be a model of that system<span class="cites">[<a class="cite" href="#ref-conant70" title="R. C. Conant and W. R. Ashby (1970). Every good regulator of a system must be a model of that system. International Journal of Systems Science 1(2).">37</a>]</span>. So compression is not one strategy among many. It is what acting requires.</p>
+        <p class="open">Open · If my reference machine is the program my outer loop found, is “which machine?” really the question “which loop am I in?”</p>
+      </div>
+    </article>
+    <article class="post">
+      <div class="pcode"><span class="holes" aria-hidden="true"><i></i><i class="on"></i><i></i></span><span class="plab">CONJECTURE</span></div>
+      <div class="pbody">
+        <h3>Explanations must be grown, never looked up, because the data never stops.</h3>
+        <p>Solomonoff’s learner is continual by construction: each update needs only its current weights, never the old data<span class="cites">[<a class="cite" href="#ref-hutter05" title="M. Hutter (2005). Universal Artificial Intelligence: Sequential Decisions Based on Algorithmic Probability. Springer.">5</a>]</span>. Pretraining is a frozen snapshot of an amortised version of it<span class="cites">[<a class="cite" href="#ref-grau24" title="J. Grau-Moya et al. (2024). Learning universal predictors. ICML.">38</a>]</span>, and learning from a prompt is an update that vanishes when the prompt ends<span class="cites">[<a class="cite" href="#ref-xie22" title="S. M. Xie, A. Raghunathan, P. Liang and T. Ma (2022). An explanation of in-context learning as implicit Bayesian inference. ICLR.">34</a>]</span>. That is why I don’t think pretraining has solved learning. The world keeps producing data no snapshot has seen. A bounded learner has to keep compressing its own beliefs as it goes, without forgetting what still matters, and neural networks are notoriously bad at that<span class="cites">[<a class="cite" href="#ref-mccloskey89" title="M. McCloskey and N. J. Cohen (1989). Catastrophic interference in connectionist networks: the sequential learning problem. Psychology of Learning and Motivation 24.">39</a>, <a class="cite" href="#ref-kirkpatrick17" title="J. Kirkpatrick et al. (2017). Overcoming catastrophic forgetting in neural networks. PNAS 114(13).">40</a>]</span>. How it is done matters less than how it is scored: total surprise on data not yet seen, the prequential score of chapter 0101<span class="cites">[<a class="cite" href="#ref-dawid84" title="A. P. Dawid (1984). Present position and potential developments: some personal views. Statistical theory: the prequential approach. Journal of the Royal Statistical Society A 147(2).">22</a>]</span>.</p>
+        <p class="open">Open · What is the right thing to carry forward when you cannot keep the past?</p>
+      </div>
+    </article>
+    <article class="post">
+      <div class="pcode"><span class="holes" aria-hidden="true"><i></i><i class="on"></i><i class="on"></i></span><span class="plab">CONJECTURE</span></div>
+      <div class="pbody">
+        <h3>Simplicity should be priced in physics, not in a language.</h3>
+        <p>Program length is measured on some machine, and every machine is the program of another; inside computation the regress has no floor. Physics might give it one. Erasing a bit costs a minimum amount of energy<span class="cites">[<a class="cite" href="#ref-landauer61" title="R. Landauer (1961). Irreversibility and heat generation in the computing process. IBM Journal of Research and Development 5(3).">41</a>]</span>, so memory is energy spent over time, and computation can trade energy against time<span class="cites">[<a class="cite" href="#ref-bennett82" title="C. H. Bennett (1982). The thermodynamics of computation: a review. International Journal of Theoretical Physics 21(12).">42</a>]</span>. Prediction itself carries a thermodynamic cost<span class="cites">[<a class="cite" href="#ref-still12" title="S. Still, D. A. Sivak, A. J. Bell and G. E. Crooks (2012). Thermodynamics of prediction. Physical Review Letters 109.">43</a>]</span>, and evolution already charges in this currency: a human brain runs on about 20 watts<span class="cites">[<a class="cite" href="#ref-raichle02" title="M. E. Raichle and D. A. Gusnard (2002). Appraising the brain’s energy budget. PNAS 99(16).">44</a>]</span>. My guess is one currency: energy over a lifetime.</p>
+        <p class="open">Open · Neurons and silicon pay different prices for the same computation, so even the physical price depends on the observer.</p>
+      </div>
+    </article>
+    <article class="post">
+      <div class="pcode"><span class="holes" aria-hidden="true"><i class="on"></i><i></i><i></i></span><span class="plab">CONJECTURE</span></div>
+      <div class="pbody">
+        <h3>A learner is bounded by the world’s clock, not by its hardware.</h3>
+        <p>A prediction that arrives after the event is worthless, and if the event is a predator, the learner is dead. So the budget is set by how fast the predicted process runs. The same brain is effectively unbounded when predicting geology and badly bounded when predicting a falling cup. Economics calls this bounded rationality<span class="cites">[<a class="cite" href="#ref-simon55" title="H. A. Simon (1955). A behavioral model of rational choice. Quarterly Journal of Economics 69(1).">45</a>]</span>; AI has studied answers that improve the longer they run<span class="cites">[<a class="cite" href="#ref-deanboddy88" title="T. Dean and M. Boddy (1988). An analysis of time-dependent planning. AAAI.">46</a>]</span> and how to decide how long to think<span class="cites">[<a class="cite" href="#ref-russellwefald91" title="S. Russell and E. Wefald (1991). Principles of metareasoning. Artificial Intelligence 49.">47</a>]</span>.</p>
+        <p class="open">Open · A promise like Solomonoff’s, stated per deadline instead of “in the long run”.</p>
+      </div>
+    </article>
+    <article class="post">
+      <div class="pcode"><span class="holes" aria-hidden="true"><i class="on"></i><i></i><i class="on"></i></span><span class="plab">CONJECTURE</span></div>
+      <div class="pbody">
+        <h3>Every observer’s data is a sequence. The world’s is not.</h3>
+        <p>Along your own clock, your experiences arrive in order; that much is guaranteed. How they are produced is different. Events that cannot influence each other have no order that all observers agree on<span class="cites">[<a class="cite" href="#ref-einstein05" title="A. Einstein (1905). Zur Elektrodynamik bewegter Körper. Annalen der Physik 17.">48</a>]</span>, and some quantum processes seem to have no definite causal order at all<span class="cites">[<a class="cite" href="#ref-oreshkov12" title="O. Oreshkov, F. Costa and Č. Brukner (2012). Quantum correlations with no causal order. Nature Communications 3.">49</a>]</span>. Yet from the inside you can never rule out a hidden sequential program underneath, because a sequential machine can simulate any parallel one<span class="cites">[<a class="cite" href="#ref-turing36" title="A. M. Turing (1936). On computable numbers, with an application to the Entscheidungsproblem. Proceedings of the London Mathematical Society s2-42.">7</a>]</span>. So the honest claim is weaker but stranger: no order is preferred, and each observer linearises the world its own way. The universe at the top of the page shows what that does to learning.</p>
+        <p class="open">Open · Learning over partial orders, where the learner chooses its own linearisation.</p>
+      </div>
+    </article>
+    <article class="post">
+      <div class="pcode"><span class="holes" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i></span><span class="plab">CONJECTURE</span></div>
+      <div class="pbody">
+        <h3>Choosing your data is choosing what you will become.</h3>
+        <p>Out of everything the world offers, a learner has to pick what to learn from, and that choice shapes every later prediction. One principle: attend wherever your compression is improving fastest, ignoring both what you have mastered and what is pure noise<span class="cites">[<a class="cite" href="#ref-schmidhuber09" title="J. Schmidhuber (2009). Driven by compression progress: a simple principle explains essential aspects of subjective beauty, novelty, surprise, interestingness, attention, curiosity, creativity, art, science, music, jokes. arXiv:0812.4360.">50</a>]</span>. Epiplexity counts exactly that learnable structure for an observer with a budget<span class="cites">[<a class="cite" href="#ref-finzi26" title="M. Finzi et al. (2026). From entropy to epiplexity: rethinking information for computationally bounded intelligence. arXiv:2601.03220.">25</a>]</span>. Living things go further and reshape the world they will later observe<span class="cites">[<a class="cite" href="#ref-odlingsmee03" title="F. J. Odling-Smee, K. N. Laland and M. W. Feldman (2003). Niche Construction: The Neglected Process in Evolution. Princeton University Press.">51</a>]</span>.</p>
+        <p class="open">Open · Data selection as the learner’s own outermost loop.</p>
+      </div>
+    </article>
+  </div>
+  <div class="col">
+    <p>Go back to <a href="#uni">the universe at the top</a> and try each world. Try Rule 30, the rule famous for looking random<span class="cites">[<a class="cite" href="#ref-wolfram02" title="S. Wolfram (2002). A New Kind of Science. Wolfram Media.">11</a>]</span>: to the row reader and the cell dweller it is close to noise, yet the light-ray rider finds structure. Try Rule 110, which can run any program<span class="cites">[<a class="cite" href="#ref-cook04" title="M. Cook (2004). Universality in elementary cellular automata. Complex Systems 15(1).">52</a>]</span>: the cell dweller sees far more pattern than the row reader. Raise <i>k</i> and the numbers move again. Same universe, same learner. What counts as random depended on the order and the memory of whoever was reading.</p>
+    <h3>So what does not change?</h3>
+    <p>If information, order, cost and randomness all depend on the observer, is anything left? Relativity in physics did not end in “anything goes”. Its achievement was finding the quantities every observer agrees on<span class="cites">[<a class="cite" href="#ref-einstein05" title="A. Einstein (1905). Zur Elektrodynamik bewegter Körper. Annalen der Physik 17.">48</a>]</span>. Learning has a few weak candidates already. Kolmogorov complexity is the same on every universal machine, up to a constant<span class="cites">[<a class="cite" href="#ref-livitanyi" title="M. Li and P. Vitányi (2019). An Introduction to Kolmogorov Complexity and Its Applications, 4th ed. Springer.">10</a>]</span>. And epiplexity suggests asking how the structure an observer can extract grows with its budget<span class="cites">[<a class="cite" href="#ref-finzi26" title="M. Finzi et al. (2026). From entropy to epiplexity: rethinking information for computationally bounded intelligence. arXiv:2601.03220.">25</a>]</span>; I suspect that growth, not any single value, is closer to invariant. I would like a theory of learning built the way relativity was: list what changes from one observer to the next, then build on what does not.</p>
+    <p class="closing">Data, order, cost and randomness change from frame to frame. <span class="one">A theory of learning, like a theory of motion, should be built from what does not.</span></p>
+  </div>
+</section>
+<section id="references" class="reading-sec">
+  <div class="col"><h3>References</h3><p class="small">Numbers in the text link here, in order of first appearance.</p>
+  <ol class="refs" id="refList"><li id="ref-krichevsky81">R. Krichevsky and V. Trofimov (1981). The performance of universal encoding. <i>IEEE Transactions on Information Theory</i> 27(2).</li><li id="ref-cleary84">J. G. Cleary and I. H. Witten (1984). Data compression using adaptive coding and partial string matching. <i>IEEE Transactions on Communications</i> 32(4).</li><li id="ref-solomonoff64">R. J. Solomonoff (1964). A formal theory of inductive inference, parts I and II. <i>Information and Control</i> 7. <a href="https://raysolomonoff.com/publications/1964pt1.pdf" target="_blank" rel="noopener">link</a></li><li id="ref-solomonoff78">R. J. Solomonoff (1978). Complexity-based induction systems: comparisons and convergence theorems. <i>IEEE Transactions on Information Theory</i> 24(4).</li><li id="ref-hutter05">M. Hutter (2005). <i>Universal Artificial Intelligence: Sequential Decisions Based on Algorithmic Probability</i>. Springer. <a href="https://doi.org/10.1007/b138233" target="_blank" rel="noopener">link</a></li><li id="ref-shannon48">C. E. Shannon (1948). A mathematical theory of communication. <i>Bell System Technical Journal</i> 27. <a href="https://doi.org/10.1002/j.1538-7305.1948.tb01338.x" target="_blank" rel="noopener">link</a></li><li id="ref-turing36">A. M. Turing (1936). On computable numbers, with an application to the Entscheidungsproblem. <i>Proceedings of the London Mathematical Society</i> s2-42. <a href="https://doi.org/10.1112/plms/s2-42.1.230" target="_blank" rel="noopener">link</a></li><li id="ref-kolmogorov65">A. N. Kolmogorov (1965). Three approaches to the quantitative definition of information. <i>Problems of Information Transmission</i> 1; English version in <i>International Journal of Computer Mathematics</i> 2 (1968). <a href="https://doi.org/10.1080/00207166808803030" target="_blank" rel="noopener">link</a></li><li id="ref-chaitin66">G. J. Chaitin (1966). On the length of programs for computing finite binary sequences. <i>Journal of the ACM</i> 13(4). <a href="https://doi.org/10.1145/321356.321363" target="_blank" rel="noopener">link</a></li><li id="ref-livitanyi">M. Li and P. Vitányi (2019). <i>An Introduction to Kolmogorov Complexity and Its Applications</i>, 4th ed. Springer.</li><li id="ref-wolfram02">S. Wolfram (2002). <i>A New Kind of Science</i>. Wolfram Media.</li><li id="ref-levin74">L. A. Levin (1974). Laws of information conservation (nongrowth) and aspects of the foundation of probability theory. <i>Problems of Information Transmission</i> 10(3).</li><li id="ref-chaitin75">G. J. Chaitin (1975). A theory of program size formally identical to information theory. <i>Journal of the ACM</i> 22(3).</li><li id="ref-martinlof66">P. Martin-Löf (1966). The definition of random sequences. <i>Information and Control</i> 9(6).</li><li id="ref-hill99">J. Håstad, R. Impagliazzo, L. A. Levin and M. Luby (1999). A pseudorandom generator from any one-way function. <i>SIAM Journal on Computing</i> 28(4).</li><li id="ref-zvonkin70">A. K. Zvonkin and L. A. Levin (1970). The complexity of finite objects and the development of the concepts of information and randomness by means of the theory of algorithms. <i>Russian Mathematical Surveys</i> 25(6).</li><li id="ref-huttermuchnik07">M. Hutter and A. Muchnik (2007). On semimeasures predicting Martin-Löf random sequences. <i>Theoretical Computer Science</i> 382(3).</li><li id="ref-rissanen78">J. Rissanen (1978). Modeling by shortest data description. <i>Automatica</i> 14(5). <a href="https://www.sciencedirect.com/science/article/abs/pii/0005109878900055" target="_blank" rel="noopener">link</a></li><li id="ref-grunwald07">P. D. Grünwald (2007). <i>The Minimum Description Length Principle</i>. MIT Press.</li><li id="ref-williamszipser89">R. J. Williams and D. Zipser (1989). A learning algorithm for continually running fully recurrent neural networks. <i>Neural Computation</i> 1(2).</li><li id="ref-rumelhart86">D. E. Rumelhart, G. E. Hinton and R. J. Williams (1986). Learning representations by back-propagating errors. <i>Nature</i> 323. <a href="https://doi.org/10.1038/323533a0" target="_blank" rel="noopener">link</a></li><li id="ref-dawid84">A. P. Dawid (1984). Present position and potential developments: some personal views. Statistical theory: the prequential approach. <i>Journal of the Royal Statistical Society A</i> 147(2).</li><li id="ref-blier18">L. Blier and Y. Ollivier (2018). The description length of deep learning models. <i>NeurIPS</i>. <a href="https://arxiv.org/abs/1802.07044" target="_blank" rel="noopener">link</a></li><li id="ref-deletang24">G. Delétang et al. (2024). Language modeling is compression. <i>ICLR</i>. <a href="https://arxiv.org/abs/2309.10668" target="_blank" rel="noopener">link</a></li><li id="ref-finzi26">M. Finzi et al. (2026). From entropy to epiplexity: rethinking information for computationally bounded intelligence. arXiv:2601.03220. <a href="https://arxiv.org/abs/2601.03220" target="_blank" rel="noopener">link</a></li><li id="ref-blumer87">A. Blumer, A. Ehrenfeucht, D. Haussler and M. K. Warmuth (1987). Occam’s razor. <i>Information Processing Letters</i> 24(6). <a href="https://www.sciencedirect.com/science/article/abs/pii/0020019087901141" target="_blank" rel="noopener">link</a></li><li id="ref-levin73">L. A. Levin (1973). Universal sequential search problems. <i>Problems of Information Transmission</i> 9(3).</li><li id="ref-schmidhuber02">J. Schmidhuber (2002). The speed prior: a new simplicity measure yielding near-optimal computable predictions. <i>Proceedings of COLT</i>.</li><li id="ref-bennett88">C. H. Bennett (1988). Logical depth and physical complexity. In <i>The Universal Turing Machine: A Half-Century Survey</i>, Oxford University Press. <a href="https://www.cs.uwaterloo.ca/~watrous/CPSC601/Bennett.LogicalDepth.pdf" target="_blank" rel="noopener">link</a></li><li id="ref-valiant84">L. G. Valiant (1984). A theory of the learnable. <i>Communications of the ACM</i> 27(11). <a href="https://doi.org/10.1145/1968.1972" target="_blank" rel="noopener">link</a></li><li id="ref-darwin1859">C. Darwin (1859). <i>On the Origin of Species</i>. John Murray.</li><li id="ref-vaswani17">A. Vaswani et al. (2017). Attention is all you need. <i>NeurIPS</i>. <a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">link</a></li><li id="ref-zhang17">C. Zhang, S. Bengio, M. Hardt, B. Recht and O. Vinyals (2017). Understanding deep learning requires rethinking generalization. <i>ICLR</i>. <a href="https://arxiv.org/abs/1611.03530" target="_blank" rel="noopener">link</a></li><li id="ref-xie22">S. M. Xie, A. Raghunathan, P. Liang and T. Ma (2022). An explanation of in-context learning as implicit Bayesian inference. <i>ICLR</i>. <a href="https://arxiv.org/abs/2111.02080" target="_blank" rel="noopener">link</a></li><li id="ref-zador19">A. M. Zador (2019). A critique of pure learning and what artificial neural networks can learn from animal brains. <i>Nature Communications</i> 10. <a href="https://doi.org/10.1038/s41467-019-11786-6" target="_blank" rel="noopener">link</a></li><li id="ref-leike15">J. Leike and M. Hutter (2015). Bad universal priors and notions of optimality. <i>Proceedings of COLT</i>.</li><li id="ref-conant70">R. C. Conant and W. R. Ashby (1970). Every good regulator of a system must be a model of that system. <i>International Journal of Systems Science</i> 1(2). <a href="https://doi.org/10.1080/00207727008920220" target="_blank" rel="noopener">link</a></li><li id="ref-grau24">J. Grau-Moya et al. (2024). Learning universal predictors. <i>ICML</i>. <a href="https://arxiv.org/abs/2401.14953" target="_blank" rel="noopener">link</a></li><li id="ref-mccloskey89">M. McCloskey and N. J. Cohen (1989). Catastrophic interference in connectionist networks: the sequential learning problem. <i>Psychology of Learning and Motivation</i> 24. <a href="https://doi.org/10.1016/S0079-7421(08)60536-8" target="_blank" rel="noopener">link</a></li><li id="ref-kirkpatrick17">J. Kirkpatrick et al. (2017). Overcoming catastrophic forgetting in neural networks. <i>PNAS</i> 114(13). <a href="https://arxiv.org/abs/1612.00796" target="_blank" rel="noopener">link</a></li><li id="ref-landauer61">R. Landauer (1961). Irreversibility and heat generation in the computing process. <i>IBM Journal of Research and Development</i> 5(3). <a href="https://doi.org/10.1147/rd.53.0183" target="_blank" rel="noopener">link</a></li><li id="ref-bennett82">C. H. Bennett (1982). The thermodynamics of computation: a review. <i>International Journal of Theoretical Physics</i> 21(12).</li><li id="ref-still12">S. Still, D. A. Sivak, A. J. Bell and G. E. Crooks (2012). Thermodynamics of prediction. <i>Physical Review Letters</i> 109. <a href="https://arxiv.org/abs/1203.3271" target="_blank" rel="noopener">link</a></li><li id="ref-raichle02">M. E. Raichle and D. A. Gusnard (2002). Appraising the brain’s energy budget. <i>PNAS</i> 99(16).</li><li id="ref-simon55">H. A. Simon (1955). A behavioral model of rational choice. <i>Quarterly Journal of Economics</i> 69(1). <a href="https://doi.org/10.2307/1884852" target="_blank" rel="noopener">link</a></li><li id="ref-deanboddy88">T. Dean and M. Boddy (1988). An analysis of time-dependent planning. <i>AAAI</i>. <a href="https://cdn.aaai.org/AAAI/1988/AAAI88-009.pdf" target="_blank" rel="noopener">link</a></li><li id="ref-russellwefald91">S. Russell and E. Wefald (1991). Principles of metareasoning. <i>Artificial Intelligence</i> 49. <a href="https://doi.org/10.1016/0004-3702(91)90015-C" target="_blank" rel="noopener">link</a></li><li id="ref-einstein05">A. Einstein (1905). Zur Elektrodynamik bewegter Körper. <i>Annalen der Physik</i> 17. <a href="https://doi.org/10.1002/andp.19053221004" target="_blank" rel="noopener">link</a></li><li id="ref-oreshkov12">O. Oreshkov, F. Costa and Č. Brukner (2012). Quantum correlations with no causal order. <i>Nature Communications</i> 3. <a href="https://doi.org/10.1038/ncomms2076" target="_blank" rel="noopener">link</a></li><li id="ref-schmidhuber09">J. Schmidhuber (2009). Driven by compression progress: a simple principle explains essential aspects of subjective beauty, novelty, surprise, interestingness, attention, curiosity, creativity, art, science, music, jokes. arXiv:0812.4360. <a href="https://arxiv.org/abs/0812.4360" target="_blank" rel="noopener">link</a></li><li id="ref-odlingsmee03">F. J. Odling-Smee, K. N. Laland and M. W. Feldman (2003). <i>Niche Construction: The Neglected Process in Evolution</i>. Princeton University Press.</li><li id="ref-cook04">M. Cook (2004). Universality in elementary cellular automata. <i>Complex Systems</i> 15(1).</li></ol></div>
+</section>
+</main>
+</div>
+<script>
+(function(){
+"use strict";
+const $ = (s, el=document) => el.querySelector(s);
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const AUTO_COOL = 5000;
+const autoHold = {};
+const autoAt = {};
+function holdAuto(key){
+  const t = performance.now() + AUTO_COOL;
+  autoHold[key] = t;
+  autoAt[key] = t;
+  if(key === 'preq') autoAt.n = t;
+  if(key === 'tapes') autoAt.tapesCycle = t;
+}
+function autoOn(key){ return !reduceMotion && performance.now() >= (autoHold[key] || 0); }
+const tok = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const svgNS = 'http://www.w3.org/2000/svg';
+const mk = (tag, attrs={}, parent) => { const e=document.createElementNS(svgNS, tag); for(const k in attrs) e.setAttribute(k, attrs[k]); if(parent) parent.appendChild(e); return e; };
+const log2 = Math.log2;
+
+/* ---------- chapter cells + rail ---------- */
+const rail = $('#rail');
+const punch = code => [...code].map(c => `<i class="${c==='1'?'on':''}"></i>`).join('');
+const railLink = (href, code, label) => {
+  const a = document.createElement('a');
+  a.href = href;
+  a.innerHTML = punch(code);
+  a.setAttribute('aria-label', label);
+  rail.appendChild(a);
+};
+rail.innerHTML = '';
+document.querySelectorAll('section.ch').forEach(sec => {
+  const code = sec.dataset.code;
+  const holes = punch(code);
+  sec.querySelector('.cell').innerHTML = `<span class="holes" aria-hidden="true">${holes}</span>`;
+  railLink('#'+sec.id, code, 'Chapter '+code+': '+sec.querySelector('h2').textContent);
+});
+railLink('#questions', '1001', '1001: Six questions, sharpened');
+railLink('#relativity', '1010', '1010: A relativity of learning');
+if('IntersectionObserver' in window){
+  const links = [...rail.querySelectorAll('a')];
+  const io = new IntersectionObserver(es => { es.forEach(e => { if(e.isIntersecting){ links.forEach(l => l.classList.toggle('active', l.getAttribute('href')==='#'+e.target.id)); } }); }, {rootMargin:'-45% 0px -50% 0px'});
+  document.querySelectorAll('section.ch, #questions, #threads, #relativity').forEach(s => io.observe(s));
+}
+
+/* ---------- bit sources ---------- */
+const L = 2048;
+const SRC = {};
+SRC.zeros = Array.from({length:L}, () => 0);
+SRC.rep01 = Array.from({length:L}, (_,n) => n%2);
+SRC.rep0010 = Array.from({length:L}, (_,n) => [0,0,1,0][n%4]);
+SRC.thue = Array.from({length:L}, (_,n) => { let c=0, m=n; while(m){ c^=m&1; m>>>=1; } return c; });
+(function(){ let a='0', b='01'; while(b.length < L){ const t=b; b=b+a; a=t; } SRC.fib = [...b.slice(0,L)].map(Number); })();
+(function(){ const s=new Uint8Array(L).fill(1); s[0]=s[1]=0; for(let i=2;i*i<L;i++) if(s[i]) for(let j=i*i;j<L;j+=i) s[j]=0; SRC.primes=[...s]; })();
+(function(){ const S=L, W=2*S+3; let c=new Uint8Array(W), n=new Uint8Array(W); const mid=S+1; c[mid]=1; const out=[];
+  for(let t=0;t<S;t++){ out.push(c[mid]); const lo=Math.max(1,mid-t-2), hi=Math.min(W-2,mid+t+2);
+    for(let i=lo;i<=hi;i++) n[i] = c[i-1] ^ (c[i] | c[i+1]); const tmp=c; c=n; n=tmp; n.fill(0); }
+  SRC.rule30 = out; })();
+(function(){ let x = 2463534242 >>> 0; const out=[]; for(let i=0;i<L;i++){ x ^= x << 13; x >>>= 0; x ^= x >>> 17; x ^= x << 5; x >>>= 0; out.push((x>>>16)&1); } SRC.xorshift=out; })();
+SRC.coin = Array.from({length:L}, () => Math.random() < 0.5 ? 1 : 0);
+const bitAt = (id, n) => SRC[id][((n % L) + L) % L];
+
+/* ---------- hero tapes ---------- */
+const TAPES = [
+  {id:'rep01', name:'Repeat 01', prog:'print "01" forever', note:'A few bits of program. Every observer sees the pattern at once.'},
+  {id:'rule30', name:'Rule 30', prog:'cellular automaton rule 30, read the centre cell', note:'A one-line rule whose output passes many statistical tests. Short but deep: no known shortcut except running it<span class="cites">[<a class="cite" href="#ref-wolfram02" title="S. Wolfram (2002). A New Kind of Science. Wolfram Media.">11</a>]</span>.'},
+  {id:'thue', name:'Thue–Morse', prog:'bit n = parity of the number of 1s in n', note:'Never periodic, yet full of repeats. A decent compressor gets a grip on it.'},
+  {id:'coin', name:'"Coin flips"', prog:'Math.random() < 0.5', note:'The trick tape. Your browser has no coin; this is a pseudorandom generator, a short program you cannot see through. Every tape here was written by a short program.'},
+  {id:'rep0010', name:'Repeat 0010', prog:'print "0010" forever', note:'Period four. Learned almost immediately.'},
+  {id:'xorshift', name:'Xorshift', prog:'x ^= x<<13; x ^= x>>>17; x ^= x<<5', note:'Three lines of code. To anyone who can’t recover the seed, it is noise.'},
+  {id:'primes', name:'Primes', prog:'bit n = 1 if n is prime', note:'Simple to state, irregular to predict. Structure, unevenly spread.'},
+  {id:'fib', name:'Fibonacci word', prog:'S(n) = S(n-1) + S(n-2), starting "0", "01"', note:'Self-similar and never periodic: structure at every scale.'}
+];
+const cv = $('#tapes'), cx = cv.getContext('2d'), keysEl = $('#tapeKeys'), noteEl = $('#tapeNote');
+let tapeN = 8, offset = 0, selected = -1, revealedAll = false, colors = {};
+const revealed = new Set();
+function readColors(){ colors = {paper:tok('--paper'), tape:tok('--tape'), ink:tok('--ink'), one:tok('--one'), zero:tok('--zero'), rule:tok('--rule')}; }
+function buildKeys(){
+  keysEl.style.gridTemplateColumns = `repeat(${tapeN}, minmax(0,1fr))`;
+  keysEl.innerHTML = '';
+  for(let i=0;i<tapeN;i++){
+    const b = document.createElement('button'); b.type='button';
+    b.textContent = revealed.has(i) ? TAPES[i].name : '?';
+    b.setAttribute('aria-pressed', String(i===selected));
+    b.setAttribute('aria-label', revealed.has(i) ? TAPES[i].name : 'Reveal tape '+(i+1));
+    b.addEventListener('click', () => pick(i));
+    keysEl.appendChild(b);
+  }
+}
+function showTape(i){
+  selected = i; revealed.add(i);
+  const t = TAPES[i];
+  noteEl.innerHTML = `<b>${t.name}.</b> <span class="prog">${t.prog}</span><br>${t.note}`;
+  buildKeys(); if(reduceMotion) drawTapes();
+}
+function pick(i){ holdAuto('tapes'); showTape(i); }
+$('#revealAll').addEventListener('click', () => { holdAuto('tapes'); for(let i=0;i<tapeN;i++) revealed.add(i); buildKeys(); noteEl.innerHTML = 'All eight tapes come from short programs, the “coin” included. Which ones look random depends on how much an observer can compute, not on how they were made.'; if(reduceMotion) drawTapes(); });
+function sizeCanvas(){
+  const dpr = window.devicePixelRatio || 1, w = cv.clientWidth, h = cv.clientHeight;
+  cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); cx.setTransform(dpr,0,0,dpr,0,0);
+  const n = w < 560 ? 6 : 8; if(n !== tapeN){ tapeN = n; if(selected >= n) selected = -1; buildKeys(); }
+}
+function drawTapes(){
+  const W = cv.clientWidth, H = cv.clientHeight, rowH = 13, colW = W / tapeN, stripW = Math.min(46, colW*0.72);
+  cx.fillStyle = colors.paper; cx.fillRect(0,0,W,H);
+  const base = Math.floor(offset / rowH), frac = offset % rowH, rows = Math.ceil(H/rowH)+2;
+  for(let i=0;i<tapeN;i++){
+    const x0 = colW*i + (colW - stripW)/2;
+    cx.fillStyle = colors.tape; cx.fillRect(x0, 0, stripW, H);
+    if(i === selected){ cx.strokeStyle = colors.one; cx.lineWidth = 2; cx.strokeRect(x0+1, 1, stripW-2, H-2); }
+    const sx = x0 + stripW*0.28, dx = x0 + stripW*0.66;
+    for(let r=0;r<rows;r++){
+      const y = r*rowH - frac + rowH/2;
+      cx.fillStyle = colors.rule; cx.beginPath(); cx.arc(sx, y, 1.7, 0, 6.2832); cx.fill();
+      if(bitAt(TAPES[i].id, base + r)){
+        cx.fillStyle = (i === selected) ? colors.one : colors.ink;
+        cx.beginPath(); cx.arc(dx, y, Math.min(4.4, stripW*0.12), 0, 6.2832); cx.fill();
+      }
+    }
+  }
+}
+readColors(); sizeCanvas(); buildKeys(); drawTapes();
+let visible = true;
+if('IntersectionObserver' in window){ new IntersectionObserver(es => { visible = es[0].isIntersecting; }).observe(cv); }
+function loop(){ if(visible && !document.hidden && autoOn('tapes')){ offset += 0.32; drawTapes(); } requestAnimationFrame(loop); }
+if(!reduceMotion) requestAnimationFrame(loop);
+if('ResizeObserver' in window){ new ResizeObserver(() => { sizeCanvas(); drawTapes(); }).observe(cv); }
+cv.addEventListener('click', e => { const r = cv.getBoundingClientRect(); const i = Math.floor((e.clientX - r.left) / (r.width / tapeN)); if(i>=0 && i<tapeN) pick(i); });
+const themeRefresh = () => { readColors(); drawTapes(); renderPreq(); };
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', themeRefresh);
+new MutationObserver(themeRefresh).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+
+/* ---------- prequential chart ---------- */
+const preq = $('#preq'), thEl = $('#theta'), nEl = $('#nflip');
+function renderPreq(){
+  const th = +thEl.value, n = +nEl.value;
+  $('#thetaV').textContent = th.toFixed(2); $('#nV').textContent = n;
+  const H = -(th*log2(th) + (1-th)*log2(1-th));
+  let pmf = new Float64Array(n+2); pmf[0] = 1; const E = [];
+  for(let t=0;t<n;t++){
+    let e = 0;
+    for(let h=0;h<=t;h++){ const p = pmf[h]; if(p < 1e-300) continue; const q1 = (h+1)/(t+2); e += p*(th*(-log2(q1)) + (1-th)*(-log2(1-q1))); }
+    E.push(e);
+    const nx = new Float64Array(n+2); for(let h=0;h<=t;h++){ nx[h] += pmf[h]*(1-th); nx[h+1] += pmf[h]*th; } pmf = nx;
+  }
+  const tot = E.reduce((a,b)=>a+b,0), area = tot - n*H;
+  $('#pArea').textContent = area.toFixed(1); $('#pHalf').textContent = (0.5*log2(n)).toFixed(1); $('#pTot').textContent = tot.toFixed(0);
+  const W=640, Ht=290, ml=46, mr=14, mt=14, mb=40, pw=W-ml-mr, ph=Ht-mt-mb;
+  const X = t => ml + pw*t/(n-1), Y = v => mt + ph*(1 - v/1.05);
+  preq.innerHTML = '';
+  const ink = 'var(--ink-soft)';
+  [0,0.25,0.5,0.75,1].forEach(v => { mk('line', {x1:ml, x2:W-mr, y1:Y(v), y2:Y(v), stroke:'var(--rule)', 'stroke-width':1}, preq); const t = mk('text', {x:ml-8, y:Y(v)+4, 'text-anchor':'end', 'font-size':11, fill:ink}, preq); t.textContent = v.toFixed(2); });
+  [0, Math.round(n/4), Math.round(n/2), Math.round(3*n/4), n-1].forEach(t => { const tx = mk('text', {x:X(t), y:Ht-mb+18, 'text-anchor':'middle', 'font-size':11, fill:ink}, preq); tx.textContent = t; });
+  const xl = mk('text', {x:ml+pw/2, y:Ht-6, 'text-anchor':'middle', 'font-size':11, fill:ink}, preq); xl.textContent = 'flips seen so far';
+  const yl = mk('text', {x:12, y:mt+ph/2, 'text-anchor':'middle', 'font-size':11, fill:ink, transform:`rotate(-90 12 ${mt+ph/2})`}, preq); yl.textContent = 'bits per flip';
+  let d = `M${X(0)},${Y(E[0])}`; for(let t=1;t<n;t++) d += `L${X(t)},${Y(E[t])}`;
+  const area_d = d + `L${X(n-1)},${Y(H)}L${X(0)},${Y(H)}Z`;
+  mk('path', {d:area_d, fill:'var(--one)', 'fill-opacity':0.16, stroke:'none'}, preq);
+  mk('line', {x1:X(0), x2:X(n-1), y1:Y(H), y2:Y(H), stroke:'var(--zero)', 'stroke-width':2, 'stroke-dasharray':'5 4'}, preq);
+  mk('path', {d, fill:'none', stroke:'var(--one)', 'stroke-width':2.4}, preq);
+  mk('circle', {cx:X(n-1), cy:Y(E[n-1]), r:3.5, fill:'var(--one)'}, preq);
+  const hl = mk('text', {x:W-mr-4, y:Y(H) + (H > 0.9 ? 16 : -7), 'text-anchor':'end', 'font-size':11, fill:'var(--zero)'}, preq); hl.textContent = `entropy H = ${H.toFixed(3)}`;
+}
+function holdIfUser(key){ return e => { if(e.isTrusted) holdAuto(key); }; }
+thEl.addEventListener('pointerdown', holdIfUser('preq'));
+nEl.addEventListener('pointerdown', holdIfUser('preq'));
+thEl.addEventListener('keydown', holdIfUser('preq'));
+nEl.addEventListener('keydown', holdIfUser('preq'));
+thEl.addEventListener('input', renderPreq); nEl.addEventListener('input', renderPreq);
+renderPreq();
+
+/* ---------- rings ---------- */
+const ringsvg = $('#ringsvg');
+const RING = {
+  nature: ['Evolution · genome', 'Development · wiring', 'Lifetime learning · skills', 'Thought'],
+  silicon: ['Architecture search', 'Pretraining · weights', 'In-context learning', 'Chain of thought']
+};
+function renderRings(which){
+  ringsvg.innerHTML = '';
+  const rs = [165, 122, 80, 40], cols = ['var(--ink)', 'var(--zero)', 'var(--one)', 'var(--ink)'];
+  const durs = [120, 40, 14, 5];
+  rs.forEach((r,i) => {
+    const g = mk('g', {class:'spin', style:`animation-duration:${durs[i]}s`}, ringsvg);
+    mk('circle', {cx:180, cy:180, r, stroke:cols[i], 'stroke-dasharray': i===3 ? '3 4' : (i===0 ? '1 5' : 'none'), 'stroke-linecap':'round'}, g);
+    const n = 3 + i*2;
+    for(let k=0;k<n;k++){ const a = 2*Math.PI*k/n; mk('circle', {cx:180 + r*Math.cos(a), cy:180 + r*Math.sin(a), r: 2.6 - i*0.35, fill:cols[i], stroke:'none'}, g); }
+  });
+  rs.forEach((r,i) => { const t = mk('text', {x:180, y: i===3 ? 184 : 180 - r + 17, fill:cols[i], 'paint-order':'stroke', stroke:'var(--panel)', 'stroke-width':4}, ringsvg); t.textContent = RING[which][i]; });
+
+  const lab = mk('text', {x:180, y:352, 'font-size':10, fill:'var(--ink-soft)'}, ringsvg); lab.textContent = 'slow outer loops, fast inner loops';
+  $('#ringNature').setAttribute('aria-pressed', String(which==='nature'));
+  $('#ringSilicon').setAttribute('aria-pressed', String(which==='silicon'));
+}
+let ringWhich = 'nature';
+$('#ringNature').addEventListener('click', () => { holdAuto('rings'); ringWhich = 'nature'; renderRings('nature'); });
+$('#ringSilicon').addEventListener('click', () => { holdAuto('rings'); ringWhich = 'silicon'; renderRings('silicon'); });
+renderRings('nature');
+
+/* =================== ART LAYER =================== */
+const rgbOf = v => { const h = v.replace('#',''); return [parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)]; };
+function mulberry(a){ return function(){ a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const C = {};
+function readC(){ ['paper','panel','ink','ink-soft','rule','tape','zero','one'].forEach(k => C[k] = tok('--'+k)); }
+readC();
+const visibleSet = new WeakMap();
+function watch(el){ visibleSet.set(el, true); if('IntersectionObserver' in window){ new IntersectionObserver(es => es.forEach(e => visibleSet.set(e.target, e.isIntersecting))).observe(el); } }
+const isVis = el => visibleSet.get(el) !== false && !document.hidden;
+function fitCanvas(cv, h){ const dpr = window.devicePixelRatio || 1, w = cv.clientWidth, hh = h ?? cv.clientHeight; if(h !== undefined) cv.style.height = h + 'px'; cv.width = Math.max(1, Math.round(w*dpr)); cv.height = Math.max(1, Math.round(hh*dpr)); const c = cv.getContext('2d'); c.setTransform(dpr,0,0,dpr,0,0); return {c, w, h:hh}; }
+
+/* ---------- cellular-automaton bands ---------- */
+const bands = [...document.querySelectorAll('canvas.qca')];
+function caGrid(rule, cols, rows, seed){
+  const g = new Uint8Array(cols*rows), rnd = mulberry(rule*7 + 3);
+  if(seed === '1') g[Math.floor(cols/2)] = 1; else for(let i=0;i<cols;i++) g[i] = rnd() < .5 ? 1 : 0;
+  for(let r=1;r<rows;r++) for(let i=0;i<cols;i++){
+    const l = g[(r-1)*cols + (i-1+cols)%cols], m = g[(r-1)*cols + i], rr = g[(r-1)*cols + (i+1)%cols];
+    g[r*cols + i] = (rule >> ((l<<2)|(m<<1)|rr)) & 1; }
+  return g;
+}
+function drawBand(cv, upto){
+  const f = fitCanvas(cv), cell = 3, cols = Math.floor(f.w/cell), rows = Math.floor(f.h/cell);
+  if(!cv._g || cv._cols !== cols){ cv._g = caGrid(+cv.dataset.rule, cols, rows, cv.dataset.seed); cv._cols = cols; cv._rows = rows; }
+  const col = cv.dataset.tone === 'ink' ? C.ink : C[cv.dataset.tone], g = cv._g, c = f.c, last = Math.min(rows, upto ?? rows);
+  c.clearRect(0,0,f.w,f.h); c.fillStyle = col;
+  const off = (f.w - cols*cell)/2;
+  for(let r=0;r<last;r++){ c.globalAlpha = .25 + .65*(r/rows); for(let i=0;i<cols;i++) if(g[r*cols+i]) c.fillRect(off + i*cell, r*cell, cell-.6, cell-.6); }
+  c.globalAlpha = 1;
+}
+bands.forEach(cv => {
+  if(reduceMotion || !('IntersectionObserver' in window)){ drawBand(cv); return; }
+  drawBand(cv, 0);
+  const io = new IntersectionObserver(es => { if(es[0].isIntersecting){ io.disconnect(); let r = 0; const tick = () => { r += 1; drawBand(cv, r); if(r < (cv._rows||30)) setTimeout(tick, 28); }; tick(); } }, {rootMargin:'0px 0px -10% 0px'});
+  io.observe(cv);
+});
+
+/* ---------- observer lens on rule 30 ---------- */
+const lensCv = $('#lens'), lensK = $('#lensK');
+const LR = 140, LC = 2*LR + 1, LM = LR;
+const LG = (() => { const g = new Uint8Array(LR*LC); g[LM] = 1;
+  for(let r=1;r<LR;r++) for(let i=1;i<LC-1;i++){ const l=g[(r-1)*LC+i-1], m=g[(r-1)*LC+i], rr=g[(r-1)*LC+i+1]; g[r*LC+i] = l ^ (m | rr); }
+  return g; })();
+function drawLens(){
+  const w = lensCv.clientWidth, cell = w/LC, h = Math.round(cell*LR);
+  const f = fitCanvas(lensCv, h), c = f.c, k = +lensK.value;
+  c.fillStyle = C.paper; c.fillRect(0,0,f.w,h);
+  c.fillStyle = C.ink;
+  for(let r=0;r<LR;r++){ const lo = Math.max(0, LM-k), hi = Math.min(LC-1, LM+k);
+    for(let i=lo;i<=hi;i++) if(i !== LM && LG[r*LC+i]){ c.globalAlpha = .82; c.fillRect(i*cell, r*cell, cell+.3, cell+.3); } }
+  const cw = Math.max(cell, 3);
+  for(let r=0;r<LR;r++){ c.globalAlpha = LG[r*LC+LM] ? 1 : .18; c.fillStyle = C.one; c.fillRect(LM*cell + cell/2 - cw/2, r*cell, cw, cell+.3); }
+  c.globalAlpha = 1;
+  if(k > 0){ c.strokeStyle = C.zero; c.setLineDash([4,4]); c.lineWidth = 1.2; c.beginPath();
+    c.moveTo((LM-k)*cell, 0); c.lineTo((LM-k)*cell, h); c.moveTo((LM+k+1)*cell, 0); c.lineTo((LM+k+1)*cell, h); c.stroke(); c.setLineDash([]); }
+  $('#lensV').textContent = (2*k+1);
+  $('#lensRead').textContent = k === 0 ? 'Sees one column. The bits pass the usual tests for randomness; to this observer they are entropy.'
+    : k < 40 ? 'Computes a little more. Nested triangles appear at the edges: the column starts to have a cause.'
+    : k < 139 ? 'Computes most of the rule. The column is just one slice of a deterministic picture.'
+    : 'Runs the whole rule. Nothing about the column was ever random: it was a short program, fully deep.';
+}
+lensK.addEventListener('pointerdown', holdIfUser('lens'));
+lensK.addEventListener('keydown', holdIfUser('lens'));
+lensK.addEventListener('input', drawLens);
+$('#lensZero').addEventListener('click', () => { holdAuto('lens'); lensK.value = 0; drawLens(); });
+$('#lensRun').addEventListener('click', () => {
+  holdAuto('lens');
+  if(reduceMotion){ lensK.value = 140; drawLens(); return; }
+  let k = 0; const t = () => { holdAuto('lens'); lensK.value = k; drawLens(); k += 2; if(k <= 140) requestAnimationFrame(t); }; t();
+});
+drawLens();
+
+/* ---------- search landscape ---------- */
+const landCv = $('#land');
+const gw = (x,y,a,b,s) => Math.exp(-((x-a)*(x-a)+(y-b)*(y-b))/s);
+const F = (x,y) => 1 - .92*gw(x,y,.8,.28,.0035) - .55*gw(x,y,.27,.62,.05) - .32*gw(x,y,.58,.82,.018) + .05*Math.sin(14*x)*Math.sin(11*y);
+const clamp01 = v => Math.min(1, Math.max(0, v));
+const gauss = () => { let u=0,v=0; while(!u) u=Math.random(); while(!v) v=Math.random(); return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); };
+const S = {};
+function resetLand(){
+  S.r = {best:Infinity, bx:0, by:0, ev:0, recent:[]};
+  S.e = {pop:Array.from({length:18}, () => { const x=Math.random(), y=Math.random(); return {x,y,f:F(x,y)}; }), best:Infinity, ev:18};
+  S.g = {x:Math.random(), y:Math.random(), trail:[], best:Infinity, ev:0, stuck:0, runs:1};
+  S.frame = 0;
+}
+function stepLand(){
+  const r = S.r; for(let i=0;i<3;i++){ const x=Math.random(), y=Math.random(), f=F(x,y); r.ev++; r.recent.push({x,y,l:1}); if(f < r.best){ r.best=f; r.bx=x; r.by=y; } }
+  r.recent.forEach(p => p.l -= .02); r.recent = r.recent.filter(p => p.l > 0);
+  const e = S.e; e.pop.forEach(ind => { const x=clamp01(ind.x + .03*gauss()), y=clamp01(ind.y + .03*gauss()), f=F(x,y); e.ev++; if(f < ind.f){ ind.x=x; ind.y=y; ind.f=f; } if(ind.f < e.best) e.best = ind.f; });
+  if(S.frame % 8 === 0){ e.pop.sort((a,b) => a.f-b.f); const b0 = e.pop[0], w = e.pop[e.pop.length-1]; w.x = clamp01(b0.x + .12*gauss()); w.y = clamp01(b0.y + .12*gauss()); w.f = F(w.x,w.y); e.ev++; }
+  const g = S.g, h = 1e-3, f0 = F(g.x,g.y), gx = (F(g.x+h,g.y)-f0)/h, gy = (F(g.x,g.y+h)-f0)/h, n = Math.hypot(gx,gy); g.ev += 3;
+  if(f0 < g.best) g.best = f0;
+  if(n < .03){ g.stuck++; } else { g.stuck = 0; const st = Math.min(.007, .0025*n); g.x = clamp01(g.x - st*gx/n); g.y = clamp01(g.y - st*gy/n); }
+  g.trail.push([g.x,g.y]); if(g.trail.length > 260) g.trail.shift();
+  if(g.stuck > 35){ g.x = Math.random(); g.y = Math.random(); g.trail = []; g.stuck = 0; g.runs++; }
+  S.frame++;
+}
+let landImg = null;
+function bakeLand(){
+  const f = fitCanvas(landCv); S.c = f.c; S.W = f.w; S.H = f.h;
+  const gwid = 220, ght = Math.round(gwid*f.h/f.w), off = document.createElement('canvas'); off.width = gwid; off.height = ght;
+  const oc = off.getContext('2d'), im = oc.createImageData(gwid, ght), P = rgbOf(C.paper), I = rgbOf(C.ink), Ru = rgbOf(C.zero);
+  const vals = new Float32Array(gwid*ght); let lo = 9, hi = -9;
+  for(let j=0;j<ght;j++) for(let i=0;i<gwid;i++){ const v = F(i/(gwid-1), j/(ght-1)); vals[j*gwid+i] = v; if(v<lo) lo=v; if(v>hi) hi=v; }
+  const band = v => Math.floor(14*(v-lo)/(hi-lo+1e-9));
+  for(let j=0;j<ght;j++) for(let i=0;i<gwid;i++){
+    const b = band(vals[j*gwid+i]), t = 1 - b/14, k = (j*gwid+i)*4;
+    const edge = (i+1<gwid && band(vals[j*gwid+i+1]) !== b) || (j+1<ght && band(vals[(j+1)*gwid+i]) !== b);
+    const mix = edge ? .5 : .32*t;
+    for(let q=0;q<3;q++) im.data[k+q] = Math.round(P[q]*(1-mix) + (edge ? Ru[q] : I[q])*mix);
+    im.data[k+3] = 255; }
+  oc.putImageData(im, 0, 0); landImg = off;
+}
+function drawLand(){
+  const c = S.c; c.imageSmoothingEnabled = true; c.drawImage(landImg, 0, 0, S.W, S.H);
+  const X = x => x*S.W, Y = y => y*S.H;
+  S.r.recent.forEach(p => { c.globalAlpha = p.l*.8; c.fillStyle = C.zero; c.fillRect(X(p.x)-1.5, Y(p.y)-1.5, 3, 3); });
+  c.globalAlpha = 1; c.strokeStyle = C.zero; c.lineWidth = 2; c.beginPath(); c.arc(X(S.r.bx), Y(S.r.by), 7, 0, 6.2832); c.stroke();
+  c.fillStyle = C.one; S.e.pop.forEach(p => { c.beginPath(); c.arc(X(p.x), Y(p.y), 3.4, 0, 6.2832); c.fill(); });
+  const t = S.g.trail; if(t.length > 1){ c.strokeStyle = C.ink; c.lineWidth = 1.6; c.beginPath(); c.moveTo(X(t[0][0]), Y(t[0][1])); t.forEach(q => c.lineTo(X(q[0]), Y(q[1]))); c.stroke(); }
+  c.fillStyle = C.ink; c.beginPath(); c.arc(X(S.g.x), Y(S.g.y), 4.5, 0, 6.2832); c.fill();
+  if(S.frame % 10 === 0 || reduceMotion){
+    $('#lgR').textContent = `best ${S.r.best.toFixed(3)} · ${S.r.ev.toLocaleString()} evals`;
+    $('#lgE').textContent = `best ${S.e.best.toFixed(3)} · ${S.e.ev.toLocaleString()} evals`;
+    $('#lgG').textContent = `best ${S.g.best.toFixed(3)} · ${S.g.ev.toLocaleString()} evals · restart ${S.g.runs}`;
+  }
+}
+resetLand(); bakeLand();
+if(reduceMotion){ for(let i=0;i<400;i++) stepLand(); }
+drawLand(); watch(landCv);
+$('#landReset').addEventListener('click', () => { holdAuto('land'); resetLand(); if(reduceMotion){ for(let i=0;i<400;i++) stepLand(); } drawLand(); });
+
+/* ---------- master loop + resize + theme ---------- */
+let preqPhase = 0, lensDir = 1, nDir = 1;
+function stepAutos(now){
+  if(reduceMotion) return;
+  if(autoOn('preq') && isVis(preq) && now >= (autoAt.preq || 0)){
+    autoAt.preq = now + 450;
+    preqPhase += 0.4;
+    thEl.value = (0.74 + 0.2 * Math.sin(preqPhase)).toFixed(2);
+    renderPreq();
+  }
+  if(autoOn('preq') && isVis(preq) && now >= (autoAt.n || 0)){
+    autoAt.n = now + 2800;
+    const stops = [50,100,150,200,250,300,350,400,450,500,550,600];
+    let i = stops.indexOf(+nEl.value);
+    if(i < 0) i = stops.reduce((b,s,k) => Math.abs(s - +nEl.value) < Math.abs(stops[b] - +nEl.value) ? k : b, 0);
+    i += nDir;
+    if(i >= stops.length - 1){ i = stops.length - 1; nDir = -1; }
+    else if(i <= 0){ i = 0; nDir = 1; }
+    nEl.value = stops[i];
+    renderPreq();
+  }
+  if(autoOn('lens') && isVis(lensCv) && now >= (autoAt.lens || 0)){
+    autoAt.lens = now + 80;
+    let k = +lensK.value + lensDir * 2;
+    if(k >= 140){ k = 140; lensDir = -1; }
+    else if(k <= 0){ k = 0; lensDir = 1; }
+    lensK.value = k;
+    drawLens();
+  }
+  if(autoOn('tapes') && visible && now >= (autoAt.tapesCycle || 0)){
+    autoAt.tapesCycle = now + 2200;
+    showTape((selected + 1) % tapeN);
+  }
+  if(autoOn('rings') && isVis(ringsvg) && now >= (autoAt.rings || 0)){
+    autoAt.rings = now + 4500;
+    ringWhich = ringWhich === 'nature' ? 'silicon' : 'nature';
+    renderRings(ringWhich);
+  }
+}
+function frame(now){
+  if(isVis(landCv) && autoOn('land')){ stepLand(); drawLand(); }
+  stepAutos(now);
+  requestAnimationFrame(frame);
+}
+watch(preq); watch(lensCv); watch(ringsvg);
+autoAt.n = performance.now() + 2800;
+autoAt.rings = performance.now() + 4500;
+autoAt.tapesCycle = performance.now() + 1600;
+if(!reduceMotion) requestAnimationFrame(frame);
+let rz; window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => {
+  bakeLand(); drawLand(); drawLens(); bands.forEach(cv => { cv._g = null; drawBand(cv); }); }, 150); });
+const artTheme = () => { readC(); bakeLand(); drawLand(); drawLens(); bands.forEach(cv => drawBand(cv)); };
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', artTheme);
+new MutationObserver(artTheme).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+
+
+/* ---------- opening boxes ---------- */
+const openQ = document.getElementById('openQ');
+if(openQ) openQ.addEventListener('click', () => {
+  openQ.innerHTML = '<i></i><i class="on"></i><i class="on"></i>';
+  openQ.setAttribute('aria-label', '011, the next box');
+  openQ.disabled = true;
+});
+
+
+/* ---------- one universe, three observers ---------- */
+(function(){
+const cv = document.getElementById('uni'); if(!cv) return;
+const UW = 96, UT = 96, SPF = 36;
+const NAMES = ['row reader', 'cell dweller', 'light-ray rider'];
+let rule = 30, k = 8, grid, orders, obs, running = false, vis = true, base = null;
+function build(){
+  const rnd = mulberry(rule*31 + 7); grid = new Uint8Array(UW*UT);
+  for(let i=0;i<UW;i++) grid[i] = rnd() < .5 ? 1 : 0;
+  for(let t=1;t<UT;t++) for(let i=0;i<UW;i++){
+    const l = grid[(t-1)*UW + (i-1+UW)%UW], m = grid[(t-1)*UW + i], r = grid[(t-1)*UW + (i+1)%UW];
+    grid[t*UW + i] = (rule >> ((l<<2)|(m<<1)|r)) & 1; }
+  const rows = [], cols = [], diag = [];
+  for(let t=0;t<UT;t++) for(let i=0;i<UW;i++) rows.push(t*UW + i);
+  for(let i=0;i<UW;i++) for(let t=0;t<UT;t++) cols.push(t*UW + i);
+  for(let d=0;d<UW;d++) for(let t=0;t<UT;t++) diag.push(t*UW + (d+t)%UW);
+  orders = [rows, cols, diag];
+}
+function reset(){
+  const size = 1 << k;
+  obs = orders.map(() => ({pos:0, hist:0, bits:0, cnt:new Float64Array(2*size).fill(.5)}));
+}
+function advance(n){
+  const mask = (1 << k) - 1; let done = true;
+  obs.forEach((o, j) => {
+    const ord = orders[j];
+    for(let s=0; s<n && o.pos < ord.length; s++){
+      const b = grid[ord[o.pos]], c = o.hist & mask, c0 = o.cnt[2*c], c1 = o.cnt[2*c+1];
+      o.bits += -Math.log2((b ? c1 : c0)/(c0 + c1)); o.cnt[2*c+b] += 1; o.hist = ((o.hist << 1) | b) & mask; o.pos++;
+    }
+    if(o.pos < ord.length) done = false;
+  });
+  return done;
+}
+function bake(){
+  const f = fitCanvas(cv, Math.round(cv.clientWidth*UT/UW*0.42));
+  const off = document.createElement('canvas'); off.width = UW; off.height = UT;
+  const oc = off.getContext('2d'); oc.fillStyle = C.paper; oc.fillRect(0,0,UW,UT); oc.fillStyle = C.ink; oc.globalAlpha = .55;
+  for(let t=0;t<UT;t++) for(let i=0;i<UW;i++) if(grid[t*UW+i]) oc.fillRect(i, t, 1, 1);
+  base = {img:off, c:f.c, w:f.w, h:f.h};
+}
+function draw(){
+  if(!base) return; const {c, w, h, img} = base, cx = w/UW, cy = h/UT;
+  c.imageSmoothingEnabled = false; c.globalAlpha = 1; c.drawImage(img, 0, 0, w, h);
+  const cols = [C.zero, C.one, C.ink];
+  obs.forEach((o, j) => {
+    const p = Math.min(o.pos, orders[j].length-1), idx = orders[j][p], t = Math.floor(idx/UW), i = idx % UW;
+    c.strokeStyle = cols[j]; c.fillStyle = cols[j]; c.lineWidth = 2; c.globalAlpha = .9; c.beginPath();
+    if(j === 0){ c.moveTo(0, (t+.5)*cy); c.lineTo(w, (t+.5)*cy); }
+    else if(j === 1){ c.moveTo((i+.5)*cx, 0); c.lineTo((i+.5)*cx, h); }
+    else { const d = ((i - t) % UW + UW) % UW; let first = true; for(let tt=0; tt<UT; tt++){ const ii = (d+tt)%UW, x = (ii+.5)*cx, y = (tt+.5)*cy; if(first || ii === 0){ c.moveTo(x,y); first = false; } else c.lineTo(x,y); } }
+    c.stroke(); c.globalAlpha = 1; c.beginPath(); c.arc((i+.5)*cx, (t+.5)*cy, Math.max(3, cx*1.2), 0, 6.2832); c.fill();
+  });
+  const ids = ['uR','uC','uD'];
+  obs.forEach((o, j) => { document.getElementById(ids[j]).textContent = o.pos ? (o.bits/o.pos).toFixed(2) : '–'; });
+}
+function summarise(){
+  const v = obs.map(o => o.bits/o.pos), lo = v.indexOf(Math.min(...v)), hi = v.indexOf(Math.max(...v));
+  document.getElementById('uNote').textContent = `Done. The ${NAMES[lo]} found the most structure (${v[lo].toFixed(2)} bits per cell); the ${NAMES[hi]} saw the least (${v[hi].toFixed(2)}). Same world, same learner, same memory: only the order differed.`;
+}
+function start(){
+  build(); reset(); bake(); document.getElementById('uniKV').textContent = k; document.getElementById('uNote').textContent = '';
+  if(reduceMotion){ advance(1e9); draw(); summarise(); return; }
+  running = true;
+}
+function loop(){
+  if(running && vis && !document.hidden){ const done = advance(SPF); draw(); if(done){ running = false; summarise(); } }
+  requestAnimationFrame(loop);
+}
+if('IntersectionObserver' in window) new IntersectionObserver(es => { vis = es[0].isIntersecting; }).observe(cv);
+document.querySelectorAll('[data-urule]').forEach(b => b.addEventListener('click', () => {
+  rule = +b.dataset.urule; document.querySelectorAll('[data-urule]').forEach(x => x.setAttribute('aria-pressed', String(x === b))); start(); }));
+document.getElementById('uniK').addEventListener('input', e => { k = +e.target.value; start(); });
+document.getElementById('uniRun').addEventListener('click', start);
+window.addEventListener('resize', () => { if(grid){ bake(); draw(); } });
+const re = () => { if(grid){ bake(); draw(); } };
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', re);
+new MutationObserver(re).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+start(); if(!reduceMotion){ advance(0); draw(); requestAnimationFrame(loop); }
+window.__uniFinish = () => { advance(1e9); draw(); summarise(); return obs.map(o => +(o.bits/o.pos).toFixed(3)); };
+window.__uniSet = (r, kk) => { rule = r; k = kk; start(); };
+})();
+
+})();
+</script>
