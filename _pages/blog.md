@@ -112,9 +112,7 @@ pagination:
 
     {% for post in postlist %}
 
-    {% if post.read_time %}
-      {% assign read_time = post.read_time %}
-    {% elsif post.external_source == blank %}
+    {% if post.external_source == blank %}
       {% assign read_time = post.content | number_of_words | divided_by: 180 | plus: 1 %}
     {% else %}
       {% assign read_time = post.feed_content | strip_html | number_of_words | divided_by: 180 | plus: 1 %}
