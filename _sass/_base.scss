@@ -328,7 +328,8 @@ ul.task-list input[type="checkbox"] {
           height: 1.7rem;
         }
 
-        &.icon-huggingface {
+        &.icon-huggingface,
+        &.icon-alphaxiv {
           fill: var(--global-text-color);
           transition: fill 0.2s ease-in-out;
         }
@@ -344,7 +345,8 @@ ul.task-list input[type="checkbox"] {
           color: var(--global-theme-color);
         }
 
-        svg.icon-huggingface {
+        svg.icon-huggingface,
+        svg.icon-alphaxiv {
           fill: var(--global-theme-color);
         }
       }
@@ -429,7 +431,8 @@ ul.task-list input[type="checkbox"] {
           height: 3.5rem;
         }
 
-        &.icon-huggingface {
+        &.icon-huggingface,
+        &.icon-alphaxiv {
           fill: var(--global-text-color);
           transition: fill 0.2s ease-in-out;
         }
@@ -447,7 +450,8 @@ ul.task-list input[type="checkbox"] {
           color: var(--global-theme-color);
         }
 
-        svg.icon-huggingface {
+        svg.icon-huggingface,
+        svg.icon-alphaxiv {
           fill: var(--global-theme-color);
         }
       }

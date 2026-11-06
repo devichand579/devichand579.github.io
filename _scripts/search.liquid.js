@@ -221,6 +221,10 @@ ninja.data = [
           {%- assign social_id = "social-scholar" -%}
           {%- assign social_title = "Google Scholar" -%}
           {%- capture social_url %}"https://scholar.google.com/citations?user={{ social[1] }}"{% endcapture -%}
+        {%- when "alphaxiv_username" -%}
+          {%- assign social_id = "social-alphaxiv" -%}
+          {%- assign social_title = "alphaXiv" -%}
+          {%- capture social_url %}"https://www.alphaxiv.org/@{{ social[1] }}"{% endcapture -%}
         {%- when "scopus_id" -%}
           {%- assign social_id = "social-scopus" -%}
           {%- assign social_title = "Scopus" -%}
