@@ -23,13 +23,6 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/publications/";
           },
-        },{id: "nav-repositories",
-          title: "repositories",
-          description: "",
-          section: "Navigation",
-          handler: () => {
-            window.location.href = "/repositories/";
-          },
         },{id: "nav-news",
           title: "news",
           description: "",
@@ -58,7 +51,18 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/world/";
           },
-        },{id: "news-started-my-undergraduate-journey-at-iit-kharagpur-at-computer-science-and-engineering-department-in-2021",
+        },{id: "post-weight-space-programming-through-programs-with-gepa",
+      
+        title: "Weight-space programming through programs with GEPA",
+      
+      description: "GEPA searches over programs that write network weights, rather than writing the weights directly.",
+      section: "Posts",
+      handler: () => {
+        
+          window.location.href = "/blog/2026/gepa-wsp/";
+        
+      },
+    },{id: "news-started-my-undergraduate-journey-at-iit-kharagpur-at-computer-science-and-engineering-department-in-2021",
           title: 'Started my undergraduate journey at IIT Kharagpur at Computer Science and Engineering Department...',
           description: "",
           section: "News",},{id: "news-awarded-silver-honour-in-the-international-astronomy-and-astrophysics-competition-among-participants-from-more-than-70-countries",
@@ -140,6 +144,13 @@ ninja.data = [{
         section: 'Socials',
         handler: () => {
           window.open("https://scholar.google.com/citations?user=AOcTwe4AAAAJ&hl", "_blank");
+        },
+      },{
+        id: 'social-alphaxiv',
+        title: 'alphaXiv',
+        section: 'Socials',
+        handler: () => {
+          window.open("https://www.alphaxiv.org/@devichand-budagam", "_blank");
         },
       },{
         id: 'social-x',
