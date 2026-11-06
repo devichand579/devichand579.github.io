@@ -37,20 +37,11 @@ pagination:
         <li>
           <i class="fa-solid fa-hashtag fa-sm"></i> <a href="{{ tag | slugify | prepend: '/blog/tag/' | relative_url }}">{{ tag }}</a>
         </li>
-        {% unless forloop.last %}
-          <p>&bull;</p>
-        {% endunless %}
       {% endfor %}
-      {% if site.display_categories.size > 0 and site.display_tags.size > 0 %}
-        <p>&bull;</p>
-      {% endif %}
       {% for category in site.display_categories %}
         <li>
           <i class="fa-solid fa-tag fa-sm"></i> <a href="{{ category | slugify | prepend: '/blog/category/' | relative_url }}">{{ category }}</a>
         </li>
-        {% unless forloop.last %}
-          <p>&bull;</p>
-        {% endunless %}
       {% endfor %}
     </ul>
   </div>
@@ -158,10 +149,8 @@ pagination:
           &nbsp; &middot; &nbsp;
             {% for tag in post.tags %}
             <a href="{{ tag | slugify | prepend: '/blog/tag/' | prepend: site.baseurl}}">
-              <i class="fa-solid fa-hashtag fa-sm"></i> {{ tag }}</a>
-              {% unless forloop.last %}
-                &nbsp;
-              {% endunless %}
+              <i class="fa-solid fa-hashtag fa-sm"></i> {{ tag }}</a>{% unless forloop.last %},
+            {% endunless %}
               {% endfor %}
           {% endif %}
 
@@ -169,10 +158,8 @@ pagination:
           &nbsp; &middot; &nbsp;
             {% for category in post.categories %}
             <a href="{{ category | slugify | prepend: '/blog/category/' | prepend: site.baseurl}}">
-              <i class="fa-solid fa-tag fa-sm"></i> {{ category }}</a>
-              {% unless forloop.last %}
-                &nbsp;
-              {% endunless %}
+              <i class="fa-solid fa-tag fa-sm"></i> {{ category }}</a>{% unless forloop.last %},
+            {% endunless %}
               {% endfor %}
           {% endif %}
     </p>
