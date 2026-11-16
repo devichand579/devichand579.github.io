@@ -1,0 +1,6 @@
+# Media coverage shown on the about page, above selected publications.
+# The section stays hidden until at least one entry is listed.
+# - date: 2026-11-12
+#   outlet: Outlet name
+#   title: Piece title
+#   url: https://example.com/story

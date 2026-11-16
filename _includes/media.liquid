@@ -1,0 +1,22 @@
+<div class="news">
+  <div class="table-responsive">
+    <table class="table table-sm table-borderless">
+      {% assign media = site.data.media | sort: 'date' | reverse %}
+      {% for item in media %}
+        <tr>
+          <th scope="row" style="width: 20%">{{ item.date | date: '%b %d, %Y' }}</th>
+          <td>
+            {% if item.url -%}
+              <a class="news-title" href="{{ item.url }}">{{ item.title }}</a>
+            {%- else -%}
+              {{ item.title }}
+            {%- endif -%}
+            {%- if item.outlet -%}
+              <span class="text-muted">, {{ item.outlet }}</span>
+            {%- endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>

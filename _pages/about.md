@@ -1,6 +1,6 @@
 ---
 layout: about
-title: about
+title: About
 permalink: /
 nav: true
 nav_order: 0
@@ -27,12 +27,8 @@ latest_posts:
 
 These days I’m more interested in understanding evolution and intelligence. I’m curious about understanding how intelligence and learning emerges from a collection of humans, cells, neurons in a neural network and what role each unit plays in the overall collection and which fundamental rules guide the evolution of a collection of interacting units.
 
-My long-term goal is to develop models whose architectures, objectives, and representations emerge through evolution rather than being imposed by human assumptions. Such a model would develop its own organization of interacting units, learning how to represent its environment, act within it, and form and revise its objectives. It would continue to evolve as its environment changes, guided by the fundamental principles through which interacting systems organize, adapt, and evolve.
+My long-term goal is to build intelligent systems which evolves from single units to individuals, populations and populations of populations, whose units of intelligence, architectures, objectives, and representations emerge through evolution rather than being imposed by human assumptions. Such a system would develop its own organization of interacting units, learning how to represent its environment, act within it, and form and revise its objectives. It would continue to evolve as its environment changes, guided by the fundamental principles through which interacting systems organize, adapt, and evolve.
 
-My research boradly touches areas like evolutionary computation, open-endedness, sample efficiency, meta-learning, continual learning, information theory, and interpretability. I also draw on physics, cognitive science, and cellular biology. I see these fields as essential for understanding intelligence, and the world it inhabits.  If you want to evolve in a tiny new world, far simpler than human lives, you can go <a href="{{ '/world/' | relative_url }}">here</a>!!
-
-I had completed my Dual Degree (B.Tech + M.Tech) in Computer Science and Engineering from <a href="https://www.iitkgp.ac.in/">IIT Kharagpur</a>, advised by <a href="https://cse.iitkgp.ac.in/~pawang/">Pawan Goyal</a> and <a href="https://www.microsoft.com/en-us/research/people/gmanish/">Manish Gupta</a>.
-
-
+My research boradly touches areas like evolutionary computation, open-endedness, sample efficiency, meta-learning, continual learning, and information theory. I also draw on physics, cognitive science, and cellular biology. I see these fields as essential for understanding intelligence, and the world it inhabits. I had completed my Dual Degree (B.Tech + M.Tech) in Computer Science and Engineering from <a href="https://www.iitkgp.ac.in/">IIT Kharagpur</a>, advised by <a href="https://cse.iitkgp.ac.in/~pawang/">Pawan Goyal</a> and <a href="https://www.microsoft.com/en-us/research/people/gmanish/">Manish Gupta</a>.
 
 Feel free to reach out at <a href="mailto:devichand579@gmail.com">devichand579[at]gmail[dot]com</a> if you have questions, want to discuss research, or are interested in collaborating.
