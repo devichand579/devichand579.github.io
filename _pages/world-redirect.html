@@ -1,0 +1,18 @@
+---
+layout: null
+permalink: /world/
+sitemap: false
+---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="canonical" href="{{ '/games/' | absolute_url }}">
+    <meta http-equiv="refresh" content="0; url={{ '/games/' | relative_url }}">
+    <title>Games</title>
+    <script>location.replace({{ '/games/' | relative_url | jsonify }});</script>
+  </head>
+  <body>
+    <p><a href="{{ '/games/' | relative_url }}">Games</a></p>
+  </body>
+</html>

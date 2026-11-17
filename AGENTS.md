@@ -17,7 +17,7 @@ Personal site for Devichand Budagam at [devichand.com](https://devichand.com). J
 | Profile photo | `assets/img/profile_pic.jpg` |
 | Social links | `_data/socials.yml` |
 | Site title, description, features | `_config.yml` |
-| World puzzle | `_pages/world.md`, `assets/js/world-law.js`, `_sass/_world-law.scss` |
+| Games | `_pages/games.md`, `_pages/game-*.html`, `assets/js/game-*.js`, `assets/js/games-shelf.js`, `_sass/_play.scss` |
 
 `_pages/` is not a normal Jekyll collection. It is listed under `include` in `_config.yml`. New pages belong there, with `permalink`, `title`, `nav`, and `nav_order`.
 
@@ -53,7 +53,7 @@ Most of `_layouts/`, `_includes/`, `_sass/`, `_plugins/`, and `assets/js/` is th
 
 Site-specific code to keep intact:
 
-- World puzzle: `_pages/world.md` (`world_law: true`), `assets/js/world-law.js`, `_sass/_world-law.scss`, the `@import "world-law"` in `assets/css/main.scss`, and the script tag in `_includes/scripts.liquid`.
+- Games share one shell: the rule card and dock in `_sass/_play.scss`, the gallery in `assets/js/games-shelf.js`, and one script per game. `/world/` redirects to `/games/`.
 - CV image layout in `_pages/cv.md`.
 - `github_readme_stats_api` in `_config.yml` points at a community instance because the official host is often down.
 

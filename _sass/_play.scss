@@ -1,0 +1,168 @@
+.play {
+  margin: 0.25rem 0 1.5rem;
+}
+
+.play-stage {
+  position: relative;
+  border: 1px solid var(--global-divider-color);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--global-bg-color);
+  min-height: 240px;
+}
+
+.play-stage canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.play[data-game="edge"] canvas {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.play[data-game="edge"],
+.play[data-game="life"] {
+  --ca-bg: #ffffff;
+  --ca-s1: #1d9e75;
+  --ca-s2: #7f77dd;
+  --ca-s3: #e59a2f;
+  --ca-cell: #1d9e75;
+  --ca-accent: #c0269e;
+}
+
+html[data-theme="dark"] .play[data-game="edge"],
+html[data-theme="dark"] .play[data-game="life"] {
+  --ca-bg: #1c1c1d;
+  --ca-s1: #5dcaa5;
+  --ca-s2: #afa9ec;
+  --ca-s3: #f0b45a;
+  --ca-cell: #5dcaa5;
+  --ca-accent: #f06ad2;
+}
+
+.play[data-game="radiate"] .play-stage,
+.play[data-game="baldwin"] .play-stage {
+  height: min(68vh, 640px);
+  display: grid;
+  place-items: center;
+  background: #07060f;
+}
+
+.play[data-game="radiate"] .play-stage canvas,
+.play[data-game="baldwin"] .play-stage canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.play-card {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  align-content: center;
+  gap: 0.7rem;
+  margin: 0;
+  padding: 1.35rem 1.25rem;
+  background: var(--global-bg-color);
+  color: var(--global-text-color);
+}
+
+.play-card[hidden] {
+  display: none;
+}
+
+.play-card p,
+.play-card b,
+.play-card a {
+  color: var(--global-text-color);
+}
+
+.play-card p {
+  margin: 0;
+  max-width: 38rem;
+}
+
+.play-paper {
+  font-size: 0.92rem;
+}
+
+.play-card button,
+.play-dock button {
+  font: inherit;
+  font-size: 0.95rem;
+  padding: 0.35rem 0.9rem;
+  border: 1px solid var(--global-divider-color);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--global-text-color);
+  cursor: pointer;
+}
+
+.play-card button {
+  justify-self: start;
+  border-color: var(--global-theme-color);
+}
+
+.play-dock button[aria-pressed="true"] {
+  border-color: var(--global-theme-color);
+  color: var(--global-theme-color);
+}
+
+.play-dock {
+  display: none;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  margin-top: 0.75rem;
+}
+
+.play.is-on .play-dock {
+  display: flex;
+}
+
+.play-dock label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  color: var(--global-text-color);
+}
+
+.play-dock input[type="range"] {
+  accent-color: var(--global-theme-color);
+  width: 140px;
+}
+
+.play-dock [data-status] {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+  color: var(--global-text-color-light);
+}
+
+.play-dock #dial {
+  width: 148px;
+  height: 128px;
+  cursor: grab;
+  touch-action: none;
+  flex: none;
+}
+
+.play-dock #dial:active {
+  cursor: grabbing;
+}
+
+@media (max-width: 640px) {
+  .play[data-game="radiate"] .play-stage,
+  .play[data-game="baldwin"] .play-stage {
+    height: 70vh;
+  }
+
+  .play-dock [data-status] {
+    margin-left: 0;
+    width: 100%;
+  }
+}

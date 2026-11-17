@@ -1,0 +1,175 @@
+.cafig {
+  --ca-bg: #ffffff;
+  --ca-s1: #1d9e75;
+  --ca-s2: #7f77dd;
+  --ca-s3: #e59a2f;
+  --ca-cell: #1d9e75;
+  --ca-accent: #c0269e;
+  border: 1px solid var(--global-divider-color);
+  border-radius: 12px;
+  background: var(--global-bg-color);
+  color: var(--global-text-color);
+  margin: 0.25rem 0 1.5rem;
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 1.5;
+
+  div,
+  span,
+  p,
+  label,
+  b,
+  strong {
+    color: inherit;
+  }
+}
+
+html[data-theme="dark"] .cafig {
+  --ca-bg: #1c1c1d;
+  --ca-s1: #5dcaa5;
+  --ca-s2: #afa9ec;
+  --ca-s3: #f0b45a;
+  --ca-cell: #5dcaa5;
+  --ca-accent: #f06ad2;
+}
+
+.cafig-body {
+  padding: 14px 16px;
+}
+
+.cafig-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.cafig .cafig-stat,
+.cafig .cafig-muted,
+.cafig .cafig-readout,
+.cafig .cafig-goal,
+.cafig .cafig-cap {
+  font-weight: 400;
+  color: var(--global-text-color-light);
+}
+
+.cafig-stat,
+.cafig-readout {
+  font-variant-numeric: tabular-nums;
+}
+
+.cafig-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.cafig button {
+  font: inherit;
+  font-size: 13px;
+  padding: 4px 10px;
+  border: 1px solid var(--global-divider-color);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--global-text-color) 6%, var(--global-bg-color));
+  color: var(--global-text-color);
+  cursor: pointer;
+  line-height: 1.4;
+}
+
+.cafig button:hover {
+  border-color: var(--global-text-color-light);
+}
+
+.cafig canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--global-divider-color);
+  border-radius: 8px;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.cafig canvas.is-pixel {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.cafig label {
+  font-size: 13px;
+  color: var(--global-text-color-light);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cafig input[type="range"] {
+  accent-color: var(--ca-accent);
+  width: 140px;
+}
+
+.cafig-life input[type="range"] {
+  width: 110px;
+}
+
+.cafig-readout {
+  font-size: 13px;
+  margin-top: 8px;
+  min-height: 1.5em;
+}
+
+.cafig-readout .v,
+.cafig-goal .found {
+  color: var(--ca-accent);
+  font-weight: 600;
+}
+
+.cafig-goals {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.cafig-goal {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  font-size: 13px;
+}
+
+.cafig-goal b {
+  color: var(--global-text-color);
+}
+
+.cafig-goal .tick {
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--global-divider-color);
+  border-radius: 50%;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+.cafig-goal.done .tick {
+  background: var(--ca-accent);
+  border-color: var(--ca-accent);
+  color: #fff;
+}
+
+.cafig-cap {
+  border-top: 1px solid var(--global-divider-color);
+  padding: 12px 16px;
+  font-size: 13px;
+}
+
+.cafig-cap b {
+  color: var(--global-text-color);
+}

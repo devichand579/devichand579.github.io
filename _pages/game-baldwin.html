@@ -1,0 +1,30 @@
+---
+layout: page
+permalink: /games/baldwin/
+title: Baldwin
+nav: false
+ca_game: baldwin
+---
+
+<article class="play" id="baldwin-app" data-game="baldwin">
+  <div class="play-stage">
+    <canvas id="sky" aria-label="A galaxy of organisms around the one neural net that works."></canvas>
+    <div class="play-card" data-card="rules">
+      <p>Drag the dial. Keep learning high until someone finds the net, then turn it down.</p>
+      <p><b>Win.</b> 90% are born knowing the net, with energy left, before generation 100.</p>
+      <p><b>Lose.</b> The energy runs out, or generation 100 comes first.</p>
+      <p><b>You learn.</b> Learning need not be inherited. It shows selection the rare wiring, and the genes catch up.</p>
+      <p class="play-paper"><a href="https://wpmedia.wolfram.com/sites/13/2018/02/01-3-5.pdf">Hinton and Nowlan, 1987</a></p>
+      <button type="button" data-enter>Enter</button>
+    </div>
+    <div class="play-card" data-card="end" hidden>
+      <p data-verdict></p>
+      <p data-end></p>
+      <button type="button" data-again>Again</button>
+    </div>
+  </div>
+  <div class="play-dock">
+    <svg id="dial" viewBox="0 0 220 190" role="slider" tabindex="0" aria-label="Learning trials per lifetime" aria-valuemin="0" aria-valuemax="1000" aria-valuenow="1000"></svg>
+    <span data-status></span>
+  </div>
+</article>

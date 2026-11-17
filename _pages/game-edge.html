@@ -1,0 +1,30 @@
+---
+layout: page
+permalink: /games/edge/
+title: Edge
+nav: false
+ca_game: edge
+---
+
+<article class="play" id="play" data-game="edge">
+  <div class="play-stage">
+    <canvas class="is-pixel" width="128" height="96" aria-label="Space-time diagram. Click to flip one cell."></canvas>
+    <div class="play-card" data-card="rules">
+      <p>Click the field. Drag λ for another rule.</p>
+      <p><b>Win.</b> The mark you leave keeps moving.</p>
+      <p><b>Lose.</b> Eight rules, and it never does.</p>
+      <p><b>You learn.</b> Order forgets a change, chaos scrambles it, and only the edge lets it travel.</p>
+      <p class="play-paper"><a href="https://doi.org/10.1016/0167-2789(90)90064-V">Langton, 1990</a></p>
+      <button type="button" data-enter>Enter</button>
+    </div>
+    <div class="play-card" data-card="end" hidden>
+      <p data-verdict></p>
+      <p data-end></p>
+      <button type="button" data-again>Again</button>
+    </div>
+  </div>
+  <div class="play-dock">
+    <label>λ <input type="range" min="0" max="0.75" step="0.01" value="0.45" data-a="lam"></label>
+    <span data-status></span>
+  </div>
+</article>

@@ -1,0 +1,29 @@
+---
+layout: page
+permalink: /games/life/
+title: Life
+nav: false
+ca_game: life
+---
+
+<article class="play" id="play" data-game="life">
+  <div class="play-stage">
+    <canvas aria-label="Game of Life grid. Click or drag to draw cells."></canvas>
+    <div class="play-card" data-card="rules">
+      <p>Click and drag to draw live cells.</p>
+      <p><b>Win.</b> A block that stays, three in a row that blink, and a glider that walks.</p>
+      <p><b>Lose.</b> Generation 400, with one of those still missing.</p>
+      <p><b>You learn.</b> Counting neighbours is enough to store, to keep time, and to send a signal.</p>
+      <p class="play-paper"><a href="https://doi.org/10.1038/scientificamerican1070-120">Gardner, 1970</a></p>
+      <button type="button" data-enter>Enter</button>
+    </div>
+    <div class="play-card" data-card="end" hidden>
+      <p data-verdict></p>
+      <p data-end></p>
+      <button type="button" data-again>Again</button>
+    </div>
+  </div>
+  <div class="play-dock">
+    <span data-status></span>
+  </div>
+</article>

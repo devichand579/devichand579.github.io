@@ -318,3 +318,15 @@
 {% if page.world_law %}
   <script defer src="{{ '/assets/js/world-law.js' | relative_url | bust_file_cache }}"></script>
 {% endif %}
+{% if page.games_shelf %}
+  <script defer src="{{ '/assets/js/games-shelf.js' | relative_url | bust_file_cache }}"></script>
+{% endif %}
+{% if page.ca_game == 'edge' %}
+  <script defer src="{{ '/assets/js/game-edge.js' | relative_url | bust_file_cache }}"></script>
+{% elsif page.ca_game == 'life' %}
+  <script defer src="{{ '/assets/js/game-life.js' | relative_url | bust_file_cache }}"></script>
+{% elsif page.ca_game == 'radiate' %}
+  <script defer src="{{ '/assets/js/game-radiate.js' | relative_url | bust_file_cache }}"></script>
+{% elsif page.ca_game == 'baldwin' %}
+  <script defer src="{{ '/assets/js/game-baldwin.js' | relative_url | bust_file_cache }}"></script>
+{% endif %}

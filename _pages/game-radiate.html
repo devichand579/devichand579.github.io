@@ -1,0 +1,31 @@
+---
+layout: page
+permalink: /games/radiate/
+title: Radiate
+nav: false
+ca_game: radiate
+---
+
+<article class="play" id="radiate-app" data-game="radiate">
+  <div class="play-stage" id="stageWrap">
+    <canvas id="world" aria-label="Niches. Drag over your orange cells."></canvas>
+    <div class="play-card" data-card="rules">
+      <p>Drag across your orange cells. Infuse to scatter. Settle to stay.</p>
+      <p><b>Win.</b> Hold more ground than either rival when time runs out.</p>
+      <p><b>Lose.</b> A rival holds more, or your cells are gone.</p>
+      <p><b>You learn.</b> Changing fast fills empty ground after a hit, then costs offspring once the ground is full.</p>
+      <p class="play-paper"><a href="https://doi.org/10.1371/journal.pone.0062186">Lehman and Stanley, 2013</a></p>
+      <button type="button" data-enter>Enter</button>
+    </div>
+    <div class="play-card" data-card="end" hidden>
+      <p data-verdict></p>
+      <p data-end></p>
+      <button type="button" data-again>Again</button>
+    </div>
+  </div>
+  <div class="play-dock">
+    <button type="button" id="tInfuse" aria-pressed="true">Infuse</button>
+    <button type="button" id="tSettle" aria-pressed="false">Settle</button>
+    <span data-status></span>
+  </div>
+</article>
